@@ -1,5 +1,6 @@
 #include "mesh.h"
 #include <unordered_map>
+#include <iostream>
 #include "math.h"
 
 // Have a way to hash the Edge class
@@ -99,7 +100,9 @@ void CreateGrid(SimpleMesh &m, int nY, int nZ, double step){
             Vertex v;
             // v.Position = glm::vec3(0.0, step * j, step * k);
             // NOTE uncomment to make the cloth fall from flat to vertical
-            v.Position = glm::vec3(step*k, step * j, 0.0);
+            v.Position = glm::vec3(step*k, step * j, 0.0f);
+            v.Normal = glm::vec3(0.0f, 0.0f, 1.0f);
+            v.TexCoord = glm::vec2( ( (float) k ) / (nZ - 1.0f), ( (float) k ) / (nY - 1.0f) );
             m.vertices[nZ*j + k] = v;
         }
     }
@@ -121,6 +124,11 @@ void CreateGrid(SimpleMesh &m, int nY, int nZ, double step){
             m.triangles.push_back(t2);
         }
     }
+    for (unsigned int i = 0; i < m.triangles.size(); i++){
+        m.indices.push_back(m.triangles[i].a);
+        m.indices.push_back(m.triangles[i].b);
+        m.indices.push_back(m.triangles[i].c);
+    }
 }
 
 double SimpleMesh::distance2(int i, int j) const {
@@ -130,4 +138,38 @@ double SimpleMesh::distance2(int i, int j) const {
 
 double SimpleMesh::distance(int i, int j) const {
     return sqrt(distance2(i, j));
+}
+
+void SimpleMesh::CreateVBO(){
+    glGenVertexArrays(1, &VAO);
+    glGenBuffers(1, &VBO);
+    glGenBuffers(1, &EBO);
+
+    glBindVertexArray(VAO);
+
+    // Upload the data of the mesh
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    // Structs are sequential so we can upload the memory like this
+    glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * vertices.size(), &vertices[0], GL_STATIC_DRAW);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * indices.size(),
+                 &indices[0], GL_STATIC_DRAW);
+
+    // Tell the VAO how to interpret the raw vertex data
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
+    // vertex normals
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Normal));
+    // vertex texture coords
+    glEnableVertexAttribArray(2);
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, TexCoord));
+
+    // Unbind the VAO
+    glBindVertexArray(0);
+}
+
+
+void SimpleMesh::bind(){
+    glBindVertexArray(VAO);
 }

@@ -6,6 +6,7 @@
 #include <string>
 #include <vector>
 #include "edge.h"
+#include "glad/glad.h"
 
 struct Vertex {
     glm::vec3 Position;
@@ -37,18 +38,19 @@ class SimpleMesh {
             this->vertices = vertices;
             this->indices = indices;
             this->textures = textures;
-
-            SetupMesh();
         }
 
+        // Geometry related functions
         void boundary(std::vector<Edge> &internalEdges, std::vector<Edge> &externalEdges) const ;
 
         double distance(int i, int j) const;
         double distance2(int i, int j) const;
 
-    private:
+        // OpenGL related functions
+        void CreateVBO();
+        void bind();
+
         unsigned int VAO, VBO, EBO;
-        void SetupMesh(){}; // not implemented yet
 };
 
 void CreateGrid(SimpleMesh &m, int nY, int nZ, double step);

@@ -6,7 +6,9 @@ project(Renderer)
 
 set(SOURCE_FILES
   src/glad.c
+  src/shader.cpp
   src/main.cpp
+  src/object.cpp
   src/mesh.cpp)
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})

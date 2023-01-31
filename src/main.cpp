@@ -3,6 +3,10 @@
 #include "glad/glad.h"
 #include <GLFW/glfw3.h>
 
+#include "mesh.h"
+#include "shader.h"
+#include "object.h"
+
 #define HEIGHT 800
 #define WIDTH 600
 
@@ -11,11 +15,24 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window);
 void render();
 
+Object obj;
+
 int main(int argc, char *argv[]) {
 
-    std::cout << "Hello World!" << std::endl;
+    std::cout << "The renderer started" << std::endl;
 
     GLFWwindow* window = CreateWindow();
+
+    ///////////////////////////////
+    SimpleMesh mesh = SimpleMesh();
+
+    CreateGrid(mesh, 3, 3, 1.0f);
+
+    std::cout << mesh.indices.size() << std::endl;
+
+    Shader shader_test = Shader("../shaders/test.v0.vert", "../shaders/test.v0.frag");
+
+    obj = Object(mesh, shader_test);
 
     // Render loop
     while (!glfwWindowShouldClose(window)){
@@ -80,4 +97,5 @@ void processInput(GLFWwindow* window){
 void render(){
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    obj.render();
 }
