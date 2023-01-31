@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include "glad/glad.h"
 #include <GLFW/glfw3.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 #include "mesh.h"
 #include "shader.h"
@@ -28,11 +30,12 @@ int main(int argc, char *argv[]) {
 
     CreateGrid(mesh, 3, 3, 1.0f);
 
-    std::cout << mesh.indices.size() << std::endl;
-
     Shader shader_test = Shader("../shaders/test.v0.vert", "../shaders/test.v0.frag");
 
     obj = Object(mesh, shader_test);
+    obj.model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f , 0.0f, -4.0f));
+    obj.view = glm::lookAt(glm::vec3(0.0f,0.0f,0.0f), glm::vec3(0.0f,0.0f,-1.0f), glm::vec3(0.0f,1.0f,0.0f));
+    obj.proj = glm::perspective(30.0f, 1.0f, 0.1f, 10.f);
 
     // Render loop
     while (!glfwWindowShouldClose(window)){
@@ -80,6 +83,7 @@ GLFWwindow* CreateWindow(){
 void framebuffer_size_callback(GLFWwindow* window, int width, int height){
     /* Gets called every time we resize the window */
     glViewport(0, 0, width, height);
+    obj.proj = glm::perspective(30.0f, ( (float) width) / height, 0.1f, 10.f);
 }
 
 

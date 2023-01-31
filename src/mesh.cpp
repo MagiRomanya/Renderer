@@ -102,7 +102,7 @@ void CreateGrid(SimpleMesh &m, int nY, int nZ, double step){
             // NOTE uncomment to make the cloth fall from flat to vertical
             v.Position = glm::vec3(step*k, step * j, 0.0f);
             v.Normal = glm::vec3(0.0f, 0.0f, 1.0f);
-            v.TexCoord = glm::vec2( ( (float) k ) / (nZ - 1.0f), ( (float) k ) / (nY - 1.0f) );
+            v.TexCoord = glm::vec2( ( (float) k ) / (nZ - 1.0f), ( (float) j ) / (nY - 1.0f) );
             m.vertices[nZ*j + k] = v;
         }
     }

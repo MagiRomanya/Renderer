@@ -13,7 +13,10 @@ void Object::render(){
     // uniforms
     shader.setMat4("model", model);
     shader.setMat4("view", view);
+    shader.setMat4("modelView", view * model);
+    shader.setMat4("normalMatrix", glm::inverse(glm::transpose(view * model)));
     shader.setMat4("proj", proj);
+    shader.setMat4("modelViewProj", proj * view * model);
 
     // std::cout << mesh.indices.size() << std::endl;
 
