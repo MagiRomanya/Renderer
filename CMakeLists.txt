@@ -15,6 +15,7 @@ add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 
 # cempile_commands.json
 set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
+set(CMAKE_BUILD_TYPE Debug)
 
 find_package(glfw3 3.3 REQUIRED)
 find_package(OpenGL REQUIRED)
