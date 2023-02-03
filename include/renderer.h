@@ -22,23 +22,25 @@
 
 class Renderer{
     public:
-    GLFWwindow* window;
+        GLFWwindow* window;
 
-    std::vector<Object*> objects;
-    Camera camera;
+        std::vector<Object*> objects;
+        Camera camera;
 
-    Renderer(){
-        camera = Camera();
-        window = CreateWindow();
-    }
+        Renderer(){
+            camera = Camera();
+            window = CreateWindow();
+        }
 
-    void renderGUI();
+        ~Renderer();
 
-    void render();
+        void renderGUI();
+
+        void render();
 
 
     private:
-    GLFWwindow* CreateWindow();
+        GLFWwindow* CreateWindow();
 
 };
 

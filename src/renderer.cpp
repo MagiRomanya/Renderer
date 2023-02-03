@@ -1,5 +1,14 @@
 #include "renderer.h"
 
+Renderer::~Renderer(){
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
+
+    glfwDestroyWindow(window);
+    glfwTerminate();
+}
+
 GLFWwindow* Renderer::CreateWindow(){
     /* Initializes openGL context and creates a resizable window with a callback */
     glfwInit();
@@ -27,9 +36,9 @@ GLFWwindow* Renderer::CreateWindow(){
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO(); (void) io;
-    ImGui::StyleColorsDark();
+    ImGui::StyleColorsLight();
     ImGui_ImplGlfw_InitForOpenGL(window, true);
-    ImGui_ImplOpenGL3_Init();
+    ImGui_ImplOpenGL3_Init("#version 330");
 
     if (!gladLoadGLLoader( (GLADloadproc) glfwGetProcAddress )){
         std::cout << "Failed to intitialize GLAD" << std::endl;
@@ -48,7 +57,6 @@ void Renderer::renderGUI(){
     {
         ImGui::Begin("Transform");
 
-        // const char* items[] = {"hola", "que", "tal"};
         std::vector<std::string> items;
         for (int i= 0; i < objects.size(); i++){
             items.push_back(objects[i]->name);
@@ -72,23 +80,34 @@ void Renderer::renderGUI(){
         bool changed = false;
         ImGui::Text("Translation");
         changed = ImGui::SliderFloat("tX", &(obj->translation.x), -30.0f, 30.0f) or changed;
+        ImGui::SameLine();
+        changed = ImGui::InputFloat("tX_direct", &(obj->translation.x)) or changed;
         changed = ImGui::SliderFloat("tY", &(obj->translation.y), -30.0f, 30.0f) or changed;
+        ImGui::SameLine();
+        changed = ImGui::InputFloat("tY_direct", &(obj->translation.y)) or changed;
         changed = ImGui::SliderFloat("tZ", &(obj->translation.z), -30.0f, 30.0f) or changed;
+        ImGui::SameLine();
+        changed = ImGui::InputFloat("tZ_direct", &(obj->translation.z)) or changed;
+
         ImGui::Text("Rotation");
         changed = ImGui::SliderFloat("rX", &(obj->rotation.x), -3.14159f, 3.14159f) or changed;
         changed = ImGui::SliderFloat("rY", &(obj->rotation.y), -3.14159f, 3.14159f) or changed;
         changed = ImGui::SliderFloat("rZ", &(obj->rotation.z), -3.14159f, 3.14159f) or changed;
+
         ImGui::Text("Scaling");
         changed = ImGui::SliderFloat("sX", &(obj->scaling.x), -30.0f, 30.0f) or changed;
+        ImGui::SameLine();
+        changed = ImGui::InputFloat("sX_direct", &(obj->scaling.x)) or changed;
         changed = ImGui::SliderFloat("sY", &(obj->scaling.y), -30.0f, 30.0f) or changed;
+        ImGui::SameLine();
+        changed = ImGui::InputFloat("sY_direct", &(obj->scaling.y)) or changed;
         changed = ImGui::SliderFloat("sZ", &(obj->scaling.z), -30.0f, 30.0f) or changed;
+        ImGui::SameLine();
+        changed = ImGui::InputFloat("sZ_direct", &(obj->scaling.z)) or changed;
 
         if (changed)
             obj->updateModelMatrix();
 
-        // ImGui::Text("Application average %.3f ms/frame (%.1f FPS)",
-        //             1000.0f / ImGui::GetIO().Framerate,
-        //             ImGui::GetIO().Framerate);
         ImGui::End();
     }
 

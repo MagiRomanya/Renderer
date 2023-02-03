@@ -34,7 +34,7 @@ class Object{
         glm::vec3 scaling = glm::vec3(1.0f);
 
         Object() {}
-        Object(SimpleMesh &mesh, Shader shader);
+        Object(SimpleMesh* mesh, Shader shader);
 
         void updateModelMatrix();
 

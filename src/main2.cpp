@@ -24,7 +24,7 @@ int main(int argc, char *argv[]) {
 
     Shader shader_test = Shader("../shaders/test.v0.vert", "../shaders/test.v0.frag");
 
-    Object obj = Object(mesh, shader_test);
+    Object obj = Object(&mesh, shader_test);
     obj.translation = glm::vec3(0,0,-10);
     obj.rotation = glm::vec3(0,3.14159f / 2,0);
     obj.scaling = glm::vec3(1.0f);

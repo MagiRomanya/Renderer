@@ -2,11 +2,10 @@
 
 unsigned int Object::num = 0;
 
-Object::Object(SimpleMesh& mesh, Shader shader){
+Object::Object(SimpleMesh* mesh, Shader shader){
     num++;
     name = "object_" + std::to_string(num);
-    mesh.createVAO();
-    this->mesh = &mesh;
+    this->mesh = mesh;
     this->shader = shader;
 }
 
@@ -79,5 +78,5 @@ void Object::updateModelMatrix(){
     model = glm::rotate(model, rotation.z, glm::vec3(0,0,1));
 
     // Translation
-    model = glm::translate(model, translation);
+    model = glm::translate(model, translation / scaling);
 }

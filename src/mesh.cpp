@@ -127,6 +127,7 @@ void CreateGrid(SimpleMesh &m, int nY, int nZ, double step){
         m.indices.push_back(m.triangles[i].b);
         m.indices.push_back(m.triangles[i].c);
     }
+    m.createVAO();
 }
 
 double SimpleMesh::distance2(int i, int j) const {
