@@ -10,7 +10,7 @@ set(SOURCE_FILES
   src/object.cpp
   src/camera.cpp
   src/mesh.cpp
-  src/main.cpp
+  src/main2.cpp
   src/renderer.cpp
 )
 
@@ -19,7 +19,8 @@ file(GLOB_RECURSE SOURCE_FILES
   external_src/*.cpp
 )
 
-add_library(${PROJECT_NAME} ${SOURCE_FILES})
+# add_library(${PROJECT_NAME} ${SOURCE_FILES})
+add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 
 # compile_commands.json
 set(CMAKE_EXPORT_COMPILE_COMMANDS 1)

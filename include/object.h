@@ -12,10 +12,13 @@
 #include "mesh.h"
 #include "shader.h"
 #include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 
 class Object{
     public:
+        std::string name;
+
         SimpleMesh* mesh;
         Shader shader;
 
@@ -26,12 +29,22 @@ class Object{
         glm::mat4 view = glm::mat4(1.0f);
         glm::mat4 proj = glm::mat4(1.0f);
 
+        glm::vec3 rotation = glm::vec3(0.0f);
+        glm::vec3 translation = glm::vec3(0.0f);
+        glm::vec3 scaling = glm::vec3(1.0f);
+
         Object() {}
         Object(SimpleMesh &mesh, Shader shader);
 
+        void updateModelMatrix();
+
         void render();
+
         void loadTexture(std::string name, std::string path);
+
         void bindTextures();
+    private:
+        static unsigned int num;
 };
 
 #endif // OBJECT_H_

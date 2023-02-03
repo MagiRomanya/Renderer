@@ -98,9 +98,9 @@ void CreateGrid(SimpleMesh &m, int nY, int nZ, double step){
     for (unsigned int j = 0; j < nY; j++){
         for (unsigned int k = 0; k < nZ; k++){
             Vertex v;
-            v.Position = glm::vec3(step * k,  0.0f ,step * j);
+            v.Position = glm::vec3(step * j,  0.0f ,step * k);
             v.Normal = glm::vec3(0.0f, 0.0f, 1.0f);
-            v.TexCoord = glm::vec2( ( (float) k ) / (nZ - 1.0f), ( (float) j ) / (nY - 1.0f) );
+            v.TexCoord = glm::vec2( ( (float) j ) / (nY - 1.0f), ( (float) k ) / (nZ - 1.0f) );
             m.vertices[nZ*j + k] = v;
         }
     }

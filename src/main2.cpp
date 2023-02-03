@@ -6,28 +6,41 @@
 Renderer renderer = Renderer();
 
 void processInput(GLFWwindow* window);
+void mouse_callback(GLFWwindow* window, double xpos, double ypos);
+void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 
 int main(int argc, char *argv[]) {
 
     std::cout << "The renderer started" << std::endl;
 
     GLFWwindow* window = renderer.window;
+    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+    glfwSetCursorPosCallback(window, mouse_callback);
 
     ///////////////////////////////
     SimpleMesh mesh = SimpleMesh();
 
-    CreateGrid(mesh, 5, 5, 1.0f);
+    CreateGrid(mesh, 5, 5, 10.0f);
 
     Shader shader_test = Shader("../shaders/test.v0.vert", "../shaders/test.v0.frag");
 
     Object obj = Object(mesh, shader_test);
-    obj.model = glm::translate(obj.model, glm::vec3(0.0f , 0.0f, -4.0f));
-    // obj.model = glm::rotate(obj.model, 3.14159f / 4.0f, glm::vec3(0, 1, 0));
+    obj.translation = glm::vec3(0,0,-10);
+    obj.rotation = glm::vec3(0,3.14159f / 2,0);
+    obj.scaling = glm::vec3(1.0f);
+    obj.updateModelMatrix();
     obj.view = glm::lookAt(glm::vec3(0.0f,0.0f,0.0f), glm::vec3(0.0f,0.0f,-1.0f), glm::vec3(0.0f,1.0f,0.0f));
-    obj.proj = glm::perspective(30.0f, 1.0f, 0.1f, 10.f);
+    obj.proj = glm::perspective(30.0f, 1.0f, 0.1f, 100.f);
+
     obj.loadTexture("gandalf", "../img/gandalf.png");
+    Object obj2 = obj;
+    obj2.name = "xdd";
+    obj2.model = glm::translate(glm::mat4(1.0f), glm::vec3(5.0f , 0.0f, -4.0f));
+    obj2.model = glm::rotate(obj2.model, 3.14159f / 2.0f, glm::vec3(0, 0, 1));
+    obj2.model = glm::rotate(obj2.model, 3.14159f / 2.0f, glm::vec3(1, 0, 0));
 
     renderer.objects.push_back(&obj);
+    renderer.objects.push_back(&obj2);
 
     // Render loop
     while (!glfwWindowShouldClose(window)){
@@ -48,9 +61,9 @@ int main(int argc, char *argv[]) {
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height){
     /* Gets called every time we resize the window */
-    glViewport(0, 0, width, height);
     for (int i = 0; i < renderer.objects.size(); i++)
-        renderer.objects[i]->proj = glm::perspective(30.0f, ( (float) width) / height, 0.1f, 10.f);
+        renderer.objects[i]->proj = glm::perspective(30.0f, ( (float) width) / height, 0.1f, 100.f);
+    glViewport(0, 0, width, height);
 }
 
 
@@ -105,4 +118,3 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos){
     lastY = ypos;
     renderer.camera.ProcessMouseMovement(deltaX, deltaY);
 }
-

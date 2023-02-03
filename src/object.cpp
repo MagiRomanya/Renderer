@@ -1,6 +1,10 @@
 #include "object.h"
 
+unsigned int Object::num = 0;
+
 Object::Object(SimpleMesh& mesh, Shader shader){
+    num++;
+    name = "object_" + std::to_string(num);
     mesh.createVAO();
     this->mesh = &mesh;
     this->shader = shader;
@@ -8,9 +12,11 @@ Object::Object(SimpleMesh& mesh, Shader shader){
 
 void Object::render(){
     shader.use();
+
     mesh->bind();
 
     bindTextures();
+
     // uniforms
     shader.setMat4("model", model);
     shader.setMat4("view", view);
@@ -40,7 +46,7 @@ void Object::loadTexture(std::string name, std::string path){
     texture_id.push_back(texture);
 
     int width, height, nrChanels;
-    stbi_set_flip_vertically_on_load(true);
+    // stbi_set_flip_vertically_on_load(true);
     unsigned char* data = stbi_load(path.c_str(), &width, &height, &nrChanels, 4);
 
     if (data){
@@ -59,4 +65,19 @@ void Object::bindTextures(){
         glActiveTexture(GL_TEXTURE0 + i);
         glBindTexture(GL_TEXTURE_2D, texture_id[i]);
     }
+}
+
+void Object::updateModelMatrix(){
+    model = glm::mat4(1);
+
+    // Scaling
+    model = glm::scale(model, scaling);
+
+    // Rotation
+    model = glm::rotate(model, rotation.x, glm::vec3(1,0,0));
+    model = glm::rotate(model, rotation.y, glm::vec3(0,1,0));
+    model = glm::rotate(model, rotation.z, glm::vec3(0,0,1));
+
+    // Translation
+    model = glm::translate(model, translation);
 }

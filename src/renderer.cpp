@@ -35,36 +35,60 @@ GLFWwindow* Renderer::CreateWindow(){
         std::cout << "Failed to intitialize GLAD" << std::endl;
         exit(-1);
     }
-
+    glEnable(GL_DEPTH_TEST);
     return window;
 }
 
 void Renderer::renderGUI(){
+    if (objects.size() == 0) return;
     // Start the frame
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
     {
-        static float f = 0.0f;
-        static int counter = 0;
+        ImGui::Begin("Transform");
 
-        ImGui::Begin("Hello, world!"); // Create a window called "Hello, world!"
-                                       // and append into it.
+        // const char* items[] = {"hola", "que", "tal"};
+        std::vector<std::string> items;
+        for (int i= 0; i < objects.size(); i++){
+            items.push_back(objects[i]->name);
+        }
+        static int selected_object = 0;
 
-        ImGui::Text("This is some useful text."); // Display some text (you can
-        ImGui::SliderFloat(
-            "float", &f, 0.0f,
-            1.0f); // Edit 1 float using a slider from 0.0f to 1.0f
-        if (ImGui::Button(
-                "Button")) // Buttons return true when clicked (most widgets
-                           // return true when edited/activated)
-            counter++;
-        ImGui::SameLine();
-        ImGui::Text("counter = %d", counter);
+        if (ImGui::BeginCombo("Object", items[selected_object].c_str())){
+            for (int i=0; i < items.size(); i++){
+                bool is_selected = (selected_object == i);
+                if (ImGui::Selectable(items[i].c_str(), is_selected)){
+                    selected_object = i;
+                }
+                if (is_selected){
+                    ImGui::SetItemDefaultFocus();
+                }
+            }
+            ImGui::EndCombo();
+        }
+        // Object transformation sliders
+        Object* obj = objects[selected_object];
+        bool changed = false;
+        ImGui::Text("Translation");
+        changed = ImGui::SliderFloat("tX", &(obj->translation.x), -30.0f, 30.0f) or changed;
+        changed = ImGui::SliderFloat("tY", &(obj->translation.y), -30.0f, 30.0f) or changed;
+        changed = ImGui::SliderFloat("tZ", &(obj->translation.z), -30.0f, 30.0f) or changed;
+        ImGui::Text("Rotation");
+        changed = ImGui::SliderFloat("rX", &(obj->rotation.x), -3.14159f, 3.14159f) or changed;
+        changed = ImGui::SliderFloat("rY", &(obj->rotation.y), -3.14159f, 3.14159f) or changed;
+        changed = ImGui::SliderFloat("rZ", &(obj->rotation.z), -3.14159f, 3.14159f) or changed;
+        ImGui::Text("Scaling");
+        changed = ImGui::SliderFloat("sX", &(obj->scaling.x), -30.0f, 30.0f) or changed;
+        changed = ImGui::SliderFloat("sY", &(obj->scaling.y), -30.0f, 30.0f) or changed;
+        changed = ImGui::SliderFloat("sZ", &(obj->scaling.z), -30.0f, 30.0f) or changed;
 
-        ImGui::Text("Application average %.3f ms/frame (%.1f FPS)",
-                    1000.0f / ImGui::GetIO().Framerate,
-                    ImGui::GetIO().Framerate);
+        if (changed)
+            obj->updateModelMatrix();
+
+        // ImGui::Text("Application average %.3f ms/frame (%.1f FPS)",
+        //             1000.0f / ImGui::GetIO().Framerate,
+        //             ImGui::GetIO().Framerate);
         ImGui::End();
     }
 
