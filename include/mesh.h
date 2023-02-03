@@ -5,6 +5,10 @@
 #include <glm/vec3.hpp>
 #include <string>
 #include <vector>
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
+
 #include "edge.h"
 #include "glad/glad.h"
 
@@ -51,7 +55,11 @@ class SimpleMesh {
         void updateVAO();
         void bind();
 
+        void loadFromFile(const std::string &path);
+
         unsigned int VAO, VBO, EBO;
+    private:
+        void updateTrianglesFromIndices();
 };
 
 void CreateGrid(SimpleMesh &m, int nY, int nZ, double step);
