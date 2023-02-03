@@ -92,9 +92,9 @@ void Renderer::renderGUI(){
         changed = ImGui::InputFloat("tZ_direct", &(obj->translation.z)) or changed;
 
         ImGui::Text("Rotation");
-        changed = ImGui::SliderFloat("rX", &(obj->rotation.x), -3.14159f, 3.14159f) or changed;
-        changed = ImGui::SliderFloat("rY", &(obj->rotation.y), -3.14159f, 3.14159f) or changed;
-        changed = ImGui::SliderFloat("rZ", &(obj->rotation.z), -3.14159f, 3.14159f) or changed;
+        changed = ImGui::SliderFloat("rX", &(obj->rotation.x), -90.0f, 90.0f) or changed;
+        changed = ImGui::SliderFloat("rY", &(obj->rotation.y), -90.0f, 90.0f) or changed;
+        changed = ImGui::SliderFloat("rZ", &(obj->rotation.z), -90.0f, 90.0f) or changed;
 
         ImGui::Text("Scaling");
         changed = ImGui::SliderFloat("sX", &(obj->scaling.x), -30.0f, 30.0f) or changed;

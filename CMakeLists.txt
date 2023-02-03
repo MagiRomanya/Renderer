@@ -14,14 +14,10 @@ set(SOURCE_FILES
   src/renderer.cpp
 )
 
-file(GLOB_RECURSE SOURCE_FILES
-  ${SOURCE_FILES}
-  external_src/*.cpp
-)
-
 add_library(${PROJECT_NAME} ${SOURCE_FILES})
 # add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/imgui)
 # compile_commands.json
 set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
 
@@ -35,7 +31,6 @@ find_package(assimp REQUIRED)
 
 target_include_directories(${PROJECT_NAME} PUBLIC
   ${CMAKE_CURRENT_SOURCE_DIR}/include/
-  ${CMAKE_CURRENT_SOURCE_DIR}/imgui
   ${GLM_INCLUDE_DIR}
   ${GLFW_INCLUDE_DIR}
   ${ASSIMP_INCLUDE_DIR}

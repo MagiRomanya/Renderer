@@ -67,15 +67,16 @@ void Object::bindTextures(){
 }
 
 void Object::updateModelMatrix(){
+    glm::vec3 radians = glm::radians(rotation);
     model = glm::mat4(1);
 
     // Scaling
     model = glm::scale(model, scaling);
 
     // Rotation
-    model = glm::rotate(model, rotation.x, glm::vec3(1,0,0));
-    model = glm::rotate(model, rotation.y, glm::vec3(0,1,0));
-    model = glm::rotate(model, rotation.z, glm::vec3(0,0,1));
+    model = glm::rotate(model, radians.x, glm::vec3(1,0,0));
+    model = glm::rotate(model, radians.y, glm::vec3(0,1,0));
+    model = glm::rotate(model, radians.z, glm::vec3(0,0,1));
 
     // Translation
     model = glm::translate(model, translation / scaling);
