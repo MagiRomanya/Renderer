@@ -75,8 +75,10 @@ void Renderer::renderGUI(){
             }
             ImGui::EndCombo();
         }
-        // Object transformation sliders
         Object* obj = objects[selected_object];
+
+        ImGui::Checkbox("Wireframe", &obj->render_as_wireframe);
+        // Object transformation sliders
         bool changed = false;
         ImGui::Text("Translation");
         changed = ImGui::SliderFloat("tX", &(obj->translation.x), -30.0f, 30.0f) or changed;
@@ -121,6 +123,10 @@ void Renderer::render(){
 
     for (int i = 0; i < objects.size(); i++){
         Object* obj = objects[i];
+        if (obj->render_as_wireframe)
+            glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+        else
+            glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
         obj->render();
     }
 

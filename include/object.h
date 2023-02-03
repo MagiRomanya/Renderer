@@ -22,6 +22,7 @@ class Object{
         SimpleMesh* mesh;
         Shader shader;
 
+        bool render_as_wireframe = false;
         std::vector<std::string> texture_name;
         std::vector<unsigned int> texture_id;
 
