@@ -98,9 +98,7 @@ void CreateGrid(SimpleMesh &m, int nY, int nZ, double step){
     for (unsigned int j = 0; j < nY; j++){
         for (unsigned int k = 0; k < nZ; k++){
             Vertex v;
-            // v.Position = glm::vec3(0.0, step * j, step * k);
-            // NOTE uncomment to make the cloth fall from flat to vertical
-            v.Position = glm::vec3(step * k, step * j, 0.0f);
+            v.Position = glm::vec3(step * k,  0.0f ,step * j);
             v.Normal = glm::vec3(0.0f, 0.0f, 1.0f);
             v.TexCoord = glm::vec2( ( (float) k ) / (nZ - 1.0f), ( (float) j ) / (nY - 1.0f) );
             m.vertices[nZ*j + k] = v;
@@ -140,7 +138,7 @@ double SimpleMesh::distance(int i, int j) const {
     return sqrt(distance2(i, j));
 }
 
-void SimpleMesh::CreateVBO(){
+void SimpleMesh::createVAO(){
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
     glGenBuffers(1, &EBO);
@@ -166,6 +164,25 @@ void SimpleMesh::CreateVBO(){
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, TexCoord));
 
     // Unbind the VAO
+    glBindVertexArray(0);
+}
+
+void SimpleMesh::updateVAO(){
+    glBindVertexArray(VAO);
+
+    // Upload the data of the mesh
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    // Structs are sequential so we can upload the memory like this
+    glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * vertices.size(), &vertices[0], GL_STATIC_DRAW);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Normal));
+    glEnableVertexAttribArray(2);
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, TexCoord));
+
     glBindVertexArray(0);
 }
 

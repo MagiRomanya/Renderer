@@ -1,14 +1,14 @@
 #include "object.h"
 
-Object::Object(SimpleMesh mesh, Shader shader){
-    mesh.CreateVBO();
-    this->mesh = mesh;
+Object::Object(SimpleMesh& mesh, Shader shader){
+    mesh.createVAO();
+    this->mesh = &mesh;
     this->shader = shader;
 }
 
 void Object::render(){
     shader.use();
-    mesh.bind();
+    mesh->bind();
 
     bindTextures();
     // uniforms
@@ -21,7 +21,8 @@ void Object::render(){
 
     // std::cout << mesh.indices.size() << std::endl;
 
-    glDrawElements(GL_TRIANGLES, mesh.indices.size(), GL_UNSIGNED_INT, 0);
+    glDrawElements(GL_TRIANGLES, mesh->indices.size(), GL_UNSIGNED_INT, 0);
+    // Unbind the vertex array buffer
     glBindVertexArray(0);
 }
 

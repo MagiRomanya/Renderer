@@ -47,7 +47,8 @@ class SimpleMesh {
         double distance2(int i, int j) const;
 
         // OpenGL related functions
-        void CreateVBO();
+        void createVAO();
+        void updateVAO();
         void bind();
 
         unsigned int VAO, VBO, EBO;

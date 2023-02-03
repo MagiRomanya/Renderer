@@ -16,7 +16,7 @@
 
 class Object{
     public:
-        SimpleMesh mesh;
+        SimpleMesh* mesh;
         Shader shader;
 
         std::vector<std::string> texture_name;
@@ -27,7 +27,7 @@ class Object{
         glm::mat4 proj = glm::mat4(1.0f);
 
         Object() {}
-        Object(SimpleMesh mesh, Shader shader);
+        Object(SimpleMesh &mesh, Shader shader);
 
         void render();
         void loadTexture(std::string name, std::string path);
