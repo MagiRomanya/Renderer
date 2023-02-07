@@ -25,19 +25,22 @@ int main(int argc, char *argv[]) {
     Shader shader_test = Shader("../shaders/test.v0.vert", "../shaders/test.v0.frag");
 
     Object obj = Object(&mesh, shader_test);
-    obj.translation = glm::vec3(0,0,-10);
-    obj.rotation = glm::vec3(0,3.14159f / 2,0);
-    obj.scaling = glm::vec3(1.0f);
+    obj.translation = glm::vec3(10,0,-10);
+    obj.rotation = glm::vec3(90,0,90);
     obj.updateModelMatrix();
     obj.view = glm::lookAt(glm::vec3(0.0f,0.0f,0.0f), glm::vec3(0.0f,0.0f,-1.0f), glm::vec3(0.0f,1.0f,0.0f));
     obj.proj = glm::perspective(30.0f, 1.0f, 0.1f, 100.f);
 
     obj.loadTexture("gandalf", "../img/gandalf.png");
-    Object obj2 = obj;
-    obj2.name = "xdd";
-    obj2.model = glm::translate(glm::mat4(1.0f), glm::vec3(5.0f , 0.0f, -4.0f));
-    obj2.model = glm::rotate(obj2.model, 3.14159f / 2.0f, glm::vec3(0, 0, 1));
-    obj2.model = glm::rotate(obj2.model, 3.14159f / 2.0f, glm::vec3(1, 0, 0));
+    SimpleMesh mesh2;
+    mesh2.loadFromFile("../img/bunny.obj");
+    Object obj2 = Object(&mesh2, shader_test);
+    obj2.translation = glm::vec3(0,0,-1);
+    obj2.rotation = glm::vec3(0,180,180);
+    obj2.scaling = glm::vec3(100,100,100);
+    obj2.updateModelMatrix();
+    obj2.view = glm::lookAt(glm::vec3(0.0f,0.0f,0.0f), glm::vec3(0.0f,0.0f,-1.0f), glm::vec3(0.0f,1.0f,0.0f));
+    obj2.proj = glm::perspective(30.0f, 1.0f, 0.1f, 100.f);
 
     renderer.objects.push_back(&obj);
     renderer.objects.push_back(&obj2);

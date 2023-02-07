@@ -41,7 +41,7 @@ int main(int argc, char *argv[]) {
 
     Shader shader_test = Shader("../shaders/test.v0.vert", "../shaders/test.v0.frag");
 
-    obj = Object(mesh, shader_test);
+    obj = Object(&mesh, shader_test);
     obj.model = glm::translate(obj.model, glm::vec3(0.0f , 0.0f, -4.0f));
     // obj.model = glm::rotate(obj.model, 3.14159f / 4.0f, glm::vec3(0, 1, 0));
     obj.view = glm::lookAt(glm::vec3(0.0f,0.0f,0.0f), glm::vec3(0.0f,0.0f,-1.0f), glm::vec3(0.0f,1.0f,0.0f));

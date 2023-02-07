@@ -191,3 +191,70 @@ void SimpleMesh::updateVAO(){
 void SimpleMesh::bind(){
     glBindVertexArray(VAO);
 }
+
+void SimpleMesh::loadFromFile(const std::string &path){
+    Assimp::Importer import;
+    const aiScene *scene = import.ReadFile(path,
+                                           aiProcess_Triangulate |
+                                           aiProcess_GenSmoothNormals |
+                                           aiProcess_FlipUVs);
+
+    if(!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
+    {
+        std::cout << "ERROR::ASSIMP::" << import.GetErrorString() << std::endl;
+        return;
+    }
+    aiMesh* mesh = scene->mMeshes[0];
+
+    // Vertex attributes
+    for (unsigned int i = 0; i < mesh->mNumVertices; i++){
+        Vertex vertex;
+        glm::vec3 vector;
+
+        // Positions
+        vector.x = mesh->mVertices[i].x;
+        vector.y = mesh->mVertices[i].y;
+        vector.z = mesh->mVertices[i].z;
+        vertex.Position = vector;
+
+        // Normals
+        vector.x = mesh->mNormals[i].x;
+        vector.y = mesh->mNormals[i].y;
+        vector.z = mesh->mNormals[i].z;
+        vertex.Normal = vector;
+
+        // Texture coordinates
+        if (mesh->mTextureCoords[0]){
+            glm::vec2 vec;
+            vec.x = mesh->mTextureCoords[0][i].x;
+            vec.y = mesh->mTextureCoords[0][i].y;
+            vertex.TexCoord = vec;
+        }
+        else
+            vertex.TexCoord = glm::vec2(0.0f, 0.0f); // no texture coordinates
+
+        vertices.push_back(vertex);
+    }
+
+    // Mesh indices
+    for (unsigned int i = 0; i < mesh->mNumFaces; i++) {
+        aiFace face = mesh->mFaces[i];
+        for (unsigned int j = 0; j < face.mNumIndices; j++)
+            indices.push_back(face.mIndices[j]);
+    }
+    updateTrianglesFromIndices();
+    createVAO();
+}
+
+void SimpleMesh::updateTrianglesFromIndices(){
+    if (indices.size() % 3 != 0){
+        std::cout << "ERROR triangulating from indexes" << std::endl;
+        return;
+    }
+    for (unsigned int i = 0; i < indices.size() / 3; i+=3){
+        Triangle t;
+        t.a = indices[i];
+        t.b = indices[i+1];
+        t.c = indices[i+2];
+    }
+}
