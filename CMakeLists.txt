@@ -1,6 +1,8 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 3.10)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED true)
+# compile_commands.json
+set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
 
 project(renderer)
 
@@ -18,8 +20,7 @@ add_library(${PROJECT_NAME} ${SOURCE_FILES})
 # add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/imgui)
-# compile_commands.json
-set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
+
 
 set(CMAKE_BUILD_TYPE Debug)
 
@@ -34,11 +35,11 @@ target_include_directories(${PROJECT_NAME} PUBLIC
   ${GLM_INCLUDE_DIR}
   ${GLFW_INCLUDE_DIR}
   ${ASSIMP_INCLUDE_DIR}
-)
+  )
 
 target_link_libraries(${PROJECT_NAME} PUBLIC
   imgui
   glfw
   OpenGL::GL
   ${ASSIMP_LIBRARIES}
-)
+  )

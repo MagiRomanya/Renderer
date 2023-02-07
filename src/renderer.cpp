@@ -199,4 +199,16 @@ void Renderer::cameraInput(){
     for (int i=0; i < objects.size(); i++){
         objects[i]->view = view;
     }
+
+    // Mouse controlls
+    double xpos, ypos;
+    glfwGetCursorPos(window, &xpos, &ypos);
+
+    static float lastX = xpos;
+    static float lastY = ypos;
+    float deltaX = xpos - lastX;
+    float deltaY = ypos - lastY;
+    lastX = xpos;
+    lastY = ypos;
+    camera.ProcessMouseMovement(deltaX, deltaY);
 }

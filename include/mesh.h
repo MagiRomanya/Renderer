@@ -5,6 +5,7 @@
 #include <glm/vec3.hpp>
 #include <string>
 #include <vector>
+
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
@@ -34,6 +35,7 @@ class SimpleMesh {
         std::vector<unsigned int> indices;
         std::vector<SimpleTexture> textures;
         std::vector<Triangle> triangles;
+        bool isDynamic = false;
 
         // Constructor
         SimpleMesh(){}
@@ -50,6 +52,8 @@ class SimpleMesh {
         double distance(int i, int j) const;
         double distance2(int i, int j) const;
 
+        void calculate_normals();
+
         // OpenGL related functions
         void createVAO();
         void updateVAO();
@@ -58,6 +62,7 @@ class SimpleMesh {
         void loadFromFile(const std::string &path);
 
         unsigned int VAO, VBO, EBO;
+
     private:
         void updateTrianglesFromIndices();
 };

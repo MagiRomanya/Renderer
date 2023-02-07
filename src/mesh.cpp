@@ -2,6 +2,7 @@
 #include <unordered_map>
 #include <iostream>
 #include "math.h"
+#include "glm/geometric.hpp"
 
 // Have a way to hash the Edge class
 namespace std{
@@ -140,6 +141,7 @@ double SimpleMesh::distance(int i, int j) const {
 }
 
 void SimpleMesh::createVAO(){
+    const GLenum usage = isDynamic ? GL_DYNAMIC_DRAW: GL_STATIC_DRAW;
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
     glGenBuffers(1, &EBO);
@@ -149,7 +151,7 @@ void SimpleMesh::createVAO(){
     // Upload the data of the mesh
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     // Structs are sequential so we can upload the memory like this
-    glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * vertices.size(), &vertices[0], GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * vertices.size(), &vertices[0], usage);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * indices.size(),
                  &indices[0], GL_STATIC_DRAW);
@@ -169,12 +171,13 @@ void SimpleMesh::createVAO(){
 }
 
 void SimpleMesh::updateVAO(){
+    const GLenum usage = isDynamic ? GL_DYNAMIC_DRAW: GL_STATIC_DRAW;
     glBindVertexArray(VAO);
 
     // Upload the data of the mesh
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     // Structs are sequential so we can upload the memory like this
-    glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * vertices.size(), &vertices[0], GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * vertices.size(), &vertices[0], usage);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 
     glEnableVertexAttribArray(0);
@@ -256,5 +259,22 @@ void SimpleMesh::updateTrianglesFromIndices(){
         t.a = indices[i];
         t.b = indices[i+1];
         t.c = indices[i+2];
+    }
+}
+
+void SimpleMesh::calculate_normals(){
+    // Normals per triangle face
+    std::vector<glm::vec3> normals_triangle;
+    normals_triangle.resize(indices.size() / 3);
+
+    for (int i=0; i < indices.size(); i+=3){
+        const int a = indices[i];
+        const int b = indices[i+1];
+        const int c = indices[i+2];
+
+        const glm::vec3& ba = vertices[b].Position - vertices[a].Position;
+        const glm::vec3& ca = vertices[c].Position - vertices[a].Position;
+        glm::vec3 normal = glm::normalize(glm::cross(ba, ca));
+        normals_triangle[i/3] = normal;
     }
 }
