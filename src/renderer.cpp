@@ -97,13 +97,14 @@ void Renderer::renderGUI(){
         changed = ImGui::SliderFloat("rZ", &(obj->rotation.z), -3.14159f, 3.14159f) or changed;
 
         ImGui::Text("Scaling");
-        changed = ImGui::SliderFloat("sX", &(obj->scaling.x), -30.0f, 30.0f) or changed;
+        static const float maxSlider = obj->scaling.x * 30.0f;
+        changed = ImGui::SliderFloat("sX", &(obj->scaling.x), -maxSlider, maxSlider) or changed;
         ImGui::SameLine();
         changed = ImGui::InputFloat("sX_direct", &(obj->scaling.x)) or changed;
-        changed = ImGui::SliderFloat("sY", &(obj->scaling.y), -30.0f, 30.0f) or changed;
+        changed = ImGui::SliderFloat("sY", &(obj->scaling.y), -maxSlider, maxSlider) or changed;
         ImGui::SameLine();
         changed = ImGui::InputFloat("sY_direct", &(obj->scaling.y)) or changed;
-        changed = ImGui::SliderFloat("sZ", &(obj->scaling.z), -30.0f, 30.0f) or changed;
+        changed = ImGui::SliderFloat("sZ", &(obj->scaling.z), -maxSlider, maxSlider) or changed;
         ImGui::SameLine();
         changed = ImGui::InputFloat("sZ_direct", &(obj->scaling.z)) or changed;
 
@@ -131,4 +132,71 @@ void Renderer::render(){
     }
 
     this->renderGUI();
+    this->resize_framebuffer();
+}
+
+void Renderer::resize_framebuffer(){
+    /* Checks wether the window has changed resolution and updates
+     * the aspect ratio and viewport with the new resolution and aspect ratio */
+    int height, width;
+    glfwGetWindowSize(window, &width, &height);
+
+    // If the resolution has not changed do nothing
+    if ((screenWidth != width) && (screenHeight == height)) return;
+
+    screenWidth = width;
+    screenHeight = height;
+
+    // Updates viewpoint
+    glViewport(0, 0, width, height);
+    for (int i = 0; i < objects.size(); i++)
+        objects[i]->proj = camera.GetProjMatrix(width, height);
+}
+
+void Renderer::addObject(Object* obj){
+    obj->view = camera.GetViewMatrix();
+    obj->proj = camera.GetProjMatrix(WIDTH, HEIGHT);
+    objects.push_back(obj);
+}
+
+void Renderer::cameraInput(){
+    /* Controlls user input through the window */
+    if(glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS){
+        glfwSetWindowShouldClose(window, true);
+    }
+
+    float deltaTime = 0.0f;
+    static float lastFrame = 0.0f;
+    float currentFrame = glfwGetTime();
+    deltaTime = currentFrame - lastFrame;
+    lastFrame = currentFrame;
+
+    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS){
+        camera.ProcessKeyboard(FORWARD, deltaTime);
+    }
+    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS){
+        camera.ProcessKeyboard(BACKWARD, deltaTime);
+    }
+    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS){
+        camera.ProcessKeyboard(LEFT, deltaTime);
+    }
+    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS){
+        camera.ProcessKeyboard(RIGHT, deltaTime);
+    }
+
+    // Enable / disable orbital cam
+    static bool escape_last_frame = false;
+    bool escape_this_frame = glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS;
+    if (escape_this_frame and (escape_this_frame != escape_last_frame)){
+        camera.is_orbital = !camera.is_orbital;
+        if (camera.is_orbital)
+            glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+        else
+            glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+    }
+    escape_last_frame = escape_this_frame;
+    glm::mat4 view = camera.GetViewMatrix();
+    for (int i=0; i < objects.size(); i++){
+        objects[i]->view = view;
+    }
 }

@@ -20,11 +20,14 @@
 #define WIDTH 600
 
 
+// void framebuffer_size_callback(GLFWwindow* window, int width, int height);
+
 class Renderer{
     public:
         GLFWwindow* window;
 
         std::vector<Object*> objects;
+
         Camera camera;
 
         Renderer(){
@@ -34,13 +37,24 @@ class Renderer{
 
         ~Renderer();
 
+        inline bool windowShouldClose() { return glfwWindowShouldClose(window); }
+
+        void cameraInput();
+
+        void addObject(Object *obj);
+
         void renderGUI();
 
         void render();
 
 
     private:
+
+        void resize_framebuffer();
+
         GLFWwindow* CreateWindow();
+
+        int screenWidth, screenHeight;
 
 };
 
