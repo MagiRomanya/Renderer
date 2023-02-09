@@ -262,6 +262,21 @@ void SimpleMesh::updateTrianglesFromIndices(){
     }
 }
 
+void SimpleMesh::updateIndicesFromTriangles(){
+    indices.clear();
+    indices.reserve(triangles.size()*3);
+    for (int i = 0; i < triangles.size(); i++){
+        Triangle &t = triangles[i];
+        std::cout << t.a << std::endl;
+        std::cout << t.b << std::endl;
+        std::cout << t.c << std::endl;
+        indices.push_back(t.a);
+        indices.push_back(t.b);
+        indices.push_back(t.c);
+
+    }
+}
+
 void SimpleMesh::calculate_normals(){
     // Normals per triangle face
     std::vector<glm::vec3> normals_triangle;
@@ -277,4 +292,171 @@ void SimpleMesh::calculate_normals(){
         glm::vec3 normal = glm::normalize(glm::cross(ba, ca));
         normals_triangle[i/3] = normal;
     }
+}
+
+void CreateBox(SimpleMesh &m, float dx, float dy, float dz){
+    m.vertices.resize(8 * 3);
+    m.triangles.resize(12);
+
+    // Generate the vertices
+    Vertex vert;
+    m.vertices.clear();
+
+    // Face x = 0
+    vert.Position = glm::vec3(0.0f, 0.0f, 0.0f);
+    vert.Normal = glm::vec3(0.0f ,0.0f, -1.0f);
+    vert.TexCoord = glm::vec2(1.0f, 1.0f);
+    m.vertices.push_back(vert);
+    vert.Normal = glm::vec3(0.0f, -1.0f, 0.0f);
+    vert.TexCoord = glm::vec2(0.0f, 0.0f);
+    m.vertices.push_back(vert);
+    vert.Normal = glm::vec3(-1.0f, 0.0f, 0.0f);
+    vert.TexCoord = glm::vec2(0.0f, 1.0f);
+    m.vertices.push_back(vert);
+
+
+    vert.Position = glm::vec3(0.0f, dy, 0.0f);
+    vert.Normal = glm::vec3(0.0f ,0.0f, -1.0f);
+    vert.TexCoord = glm::vec2(1.0f, 0.0f);
+    m.vertices.push_back(vert);
+    vert.Normal = glm::vec3(0.0f, 1.0f, 0.0f);
+    vert.TexCoord = glm::vec2(0.0f, 1.0f);
+    m.vertices.push_back(vert);
+    vert.Normal = glm::vec3(-1.0f, 0.0f, 0.0f);
+    vert.TexCoord = glm::vec2(0.0f, 0.0f);
+    m.vertices.push_back(vert);
+
+    vert.Position = glm::vec3(0.0f, dy, dz);
+    vert.Normal = glm::vec3(0.0f ,0.0f, 1.0f);
+    vert.TexCoord = glm::vec2(1.0f, 1.0f);
+    m.vertices.push_back(vert);
+    vert.Normal = glm::vec3(0.0f, 1.0f, 0.0f);
+    vert.TexCoord = glm::vec2(1.0f, 1.0f);
+    m.vertices.push_back(vert);
+    vert.Normal = glm::vec3(-1.0f, 0.0f, 0.0f);
+    vert.TexCoord = glm::vec2(1.0f, 0.0f);
+    m.vertices.push_back(vert);
+
+    vert.Position = glm::vec3(0.0f, 0.0f, dz);
+    vert.Normal = glm::vec3(0.0f ,0.0f, 1.0f);
+    vert.TexCoord = glm::vec2(1.0f, 0.0f);
+    m.vertices.push_back(vert);
+    vert.Normal = glm::vec3(0.0f, -1.0f, 0.0f);
+    vert.TexCoord = glm::vec2(1.0f, 1.0f);
+    m.vertices.push_back(vert);
+    vert.Normal = glm::vec3(-1.0f, 0.0f, 0.0f);
+    vert.TexCoord = glm::vec2(1.0f, 0.0f);
+    m.vertices.push_back(vert);
+
+    // Face x = dx
+    vert.Position = glm::vec3(dx, 0.0f, 0.0f);
+    vert.Normal = glm::vec3(0.0f ,0.0f, -1.0f);
+    vert.TexCoord = glm::vec2(0.0f, 1.0f);
+    m.vertices.push_back(vert);
+    vert.Normal = glm::vec3(0.0f, -1.0f, 0.0f);
+    vert.TexCoord = glm::vec2(0.0f, 1.0f);
+    m.vertices.push_back(vert);
+    vert.Normal = glm::vec3(1.0f, 0.0f, 0.0f);
+    vert.TexCoord = glm::vec2(0.0f, 0.0f);
+    m.vertices.push_back(vert);
+
+
+    vert.Position = glm::vec3(dx, dy, 0.0f);
+    vert.Normal = glm::vec3(0.0f ,0.0f, -1.0f);
+    vert.TexCoord = glm::vec2(0.0f, 0.0f);
+    m.vertices.push_back(vert);
+    vert.Normal = glm::vec3(0.0f, 1.0f, 0.0f);
+    vert.TexCoord = glm::vec2(0.0f, 0.0f);
+    m.vertices.push_back(vert);
+    vert.Normal = glm::vec3(1.0f, 0.0f, 0.0f);
+    vert.TexCoord = glm::vec2(0.0f, 1.0f);
+    m.vertices.push_back(vert);
+
+    vert.Position = glm::vec3(dx, dy, dz);
+    vert.Normal = glm::vec3(0.0f ,0.0f, 1.0f);
+    vert.TexCoord = glm::vec2(0.0f, 1.0f);
+    m.vertices.push_back(vert);
+    vert.Normal = glm::vec3(0.0f, 1.0f, 0.0f);
+    vert.TexCoord = glm::vec2(1.0f, 0.0f);
+    m.vertices.push_back(vert);
+    vert.Normal = glm::vec3(1.0f, 0.0f, 0.0f);
+    vert.TexCoord = glm::vec2(1.0f, 1.0f);
+    m.vertices.push_back(vert);
+
+    vert.Position = glm::vec3(dx, 0.0f, dz);
+    vert.Normal = glm::vec3(0.0f ,0.0f, 1.0f);
+    vert.TexCoord = glm::vec2(0.0f, 0.0f);
+    m.vertices.push_back(vert);
+    vert.Normal = glm::vec3(0.0f, -1.0f, 0.0f);
+    vert.TexCoord = glm::vec2(1.0f, 1.0f);
+    m.vertices.push_back(vert);
+    vert.Normal = glm::vec3(1.0f, 0.0f, 0.0f);
+    vert.TexCoord = glm::vec2(1.0f, 0.0f);
+    m.vertices.push_back(vert);
+
+    // Join the vertices to form the tirangles
+    Triangle t;
+    m.triangles.clear();
+    // Face z positive
+    t.a = 3*7;
+    t.b = 3*3;
+    t.c = 3*2;
+    m.triangles.push_back(t);
+    t.a = 3*2;
+    t.b = 3*6;
+    t.c = 3*7;
+    m.triangles.push_back(t);
+
+    // Face z negative
+    t.a = 3*0;
+    t.b = 3*1;
+    t.c = 3*4;
+    m.triangles.push_back(t);
+    t.a = 3*4;
+    t.b = 3*1;
+    t.c = 3*5;
+    m.triangles.push_back(t);
+
+    // Face y positive
+    t.a = 3*2 + 1;
+    t.b = 3*6 + 1;
+    t.c = 3*1 + 1;
+    m.triangles.push_back(t);
+    t.a = 3*5 + 1;
+    t.b = 3*1 + 1;
+    t.c = 3*6 + 1;
+    m.triangles.push_back(t);
+
+    // Face y negative
+    t.a = 3*3 + 1;
+    t.b = 3*0 + 1;
+    t.c = 3*4 + 1;
+    m.triangles.push_back(t);
+    t.a = 3*4 + 1;
+    t.b = 3*7 + 1;
+    t.c = 3*3 + 1;
+    m.triangles.push_back(t);
+
+    // Face x positive
+    t.a = 3*4 + 2;
+    t.b = 3*5 + 2;
+    t.c = 3*7 + 2;
+    m.triangles.push_back(t);
+    t.a = 3*5 + 2;
+    t.b = 3*6 + 2;
+    t.c = 3*7 + 2;
+    m.triangles.push_back(t);
+
+    // Face x negative
+    t.a = 3*0 + 2;
+    t.b = 3*2 + 2;
+    t.c = 3*1 + 2;
+    m.triangles.push_back(t);
+    t.a = 3*0 + 2;
+    t.b = 3*3 + 2;
+    t.c = 3*2 + 2;
+    m.triangles.push_back(t);
+
+    m.updateIndicesFromTriangles();
+    m.createVAO();
 }

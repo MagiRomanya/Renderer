@@ -25,12 +25,8 @@ GLFWwindow* Renderer::CreateWindow(){
     }
     glfwMakeContextCurrent(window);
 
-    // Window resize callback
-    // glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
-
     // Mouse
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-    // glfwSetCursorPosCallback(window, mouse_callback);
 
     // Imgui context
     IMGUI_CHECKVERSION();
@@ -93,8 +89,14 @@ void Renderer::renderGUI(){
 
         ImGui::Text("Rotation");
         changed = ImGui::SliderFloat("rX", &(obj->rotation.x), -180.0f, 180.0f) or changed;
+        ImGui::SameLine();
+        changed = ImGui::InputFloat("rX_direct", &(obj->rotation.x)) or changed;
         changed = ImGui::SliderFloat("rY", &(obj->rotation.y), -180.0f, 180.0f) or changed;
+        ImGui::SameLine();
+        changed = ImGui::InputFloat("rY_direct", &(obj->rotation.y)) or changed;
         changed = ImGui::SliderFloat("rZ", &(obj->rotation.z), -180.0f, 180.0f) or changed;
+        ImGui::SameLine();
+        changed = ImGui::InputFloat("rZ_direct", &(obj->rotation.z)) or changed;
 
         ImGui::Text("Scaling");
         static const float maxSlider = obj->scaling.x * 30.0f;
@@ -107,6 +109,13 @@ void Renderer::renderGUI(){
         changed = ImGui::SliderFloat("sZ", &(obj->scaling.z), -maxSlider, maxSlider) or changed;
         ImGui::SameLine();
         changed = ImGui::InputFloat("sZ_direct", &(obj->scaling.z)) or changed;
+        static float global_scaling;
+        if (ImGui::InputFloat("Global Scaling", &global_scaling)){
+            obj->scaling.x = global_scaling;
+            obj->scaling.y = global_scaling;
+            obj->scaling.z = global_scaling;
+            obj->updateModelMatrix();
+        }
 
         if (changed)
             obj->updateModelMatrix();

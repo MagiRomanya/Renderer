@@ -63,9 +63,13 @@ class SimpleMesh {
 
         unsigned int VAO, VBO, EBO;
 
+        void updateIndicesFromTriangles();
+
     private:
         void updateTrianglesFromIndices();
 };
 
 void CreateGrid(SimpleMesh &m, int nY, int nZ, double step);
+
+void CreateBox(SimpleMesh &m, float dx, float dy, float dz);
 #endif
