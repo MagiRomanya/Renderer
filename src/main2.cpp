@@ -28,9 +28,10 @@ int main(int argc, char *argv[]) {
     renderer.addObject(&obj);
 
     SimpleMesh mesh2;
+    Shader shader_normal = Shader("../shaders/test.v0.vert", "../shaders/normals.frag");
     // mesh2.loadFromFile("../img/bunny.obj");
     CreateBox(mesh2, 1, 1, 1);
-    Object obj2 = Object(&mesh2, shader_test);
+    Object obj2 = Object(&mesh2, shader_normal);
     obj2.translation = glm::vec3(0,0,-10);
     obj2.scaling = glm::vec3(1);
     obj2.updateModelMatrix();

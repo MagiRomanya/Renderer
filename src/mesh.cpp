@@ -267,9 +267,6 @@ void SimpleMesh::updateIndicesFromTriangles(){
     indices.reserve(triangles.size()*3);
     for (int i = 0; i < triangles.size(); i++){
         Triangle &t = triangles[i];
-        std::cout << t.a << std::endl;
-        std::cout << t.b << std::endl;
-        std::cout << t.c << std::endl;
         indices.push_back(t.a);
         indices.push_back(t.b);
         indices.push_back(t.c);
@@ -456,6 +453,12 @@ void CreateBox(SimpleMesh &m, float dx, float dy, float dz){
     t.b = 3*3 + 2;
     t.c = 3*2 + 2;
     m.triangles.push_back(t);
+
+    // Center the vertices so the center of rotation of the cube is in the inside
+    for (int i = 0; i < m.vertices.size(); i++){
+        Vertex& vert = m.vertices[i];
+        vert.Position += glm::vec3(-dx/2.0f, -dy/2.0f, -dz/2.0f);
+    }
 
     m.updateIndicesFromTriangles();
     m.createVAO();

@@ -1,4 +1,4 @@
-CMAKE_MINIMUM_REQUIRED(VERSION 3.10)
+CMAKE_MINIMUM_REQUIRED(VERSION 3.21)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED true)
 # compile_commands.json
@@ -12,12 +12,21 @@ set(SOURCE_FILES
   src/object.cpp
   src/camera.cpp
   src/mesh.cpp
-  # src/main2.cpp
+  src/main2.cpp
   src/renderer.cpp
 )
+# Creates a library if added as a subdirectory or compiles it as
+# an executable if run as a top level CMakeLists.txt
+if(PROJECT_IS_TOP_LEVEL)
+  message("${PROJECT_NAME} compiled as a standalone")
 
-add_library(${PROJECT_NAME} ${SOURCE_FILES})
-# add_executable(${PROJECT_NAME} ${SOURCE_FILES})
+  # set(SOURCE_FILES ${SOURCE_FILES} src/main2.cpp)
+  add_executable(${PROJECT_NAME} ${SOURCE_FILES})
+else()
+  message("${PROJECT_NAME} added as subdirectory")
+  add_library(${PROJECT_NAME} ${SOURCE_FILES})
+endif()
+
 
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/imgui)
 

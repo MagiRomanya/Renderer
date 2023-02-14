@@ -11,9 +11,11 @@ uniform mat4 modelViewProj;
 uniform mat4 normalMatrix;
 
 out vec2 TexCoord;
+out vec3 normal;
 
 void main()
 {
     TexCoord =  vTexCoord;
+    normal = (normalMatrix * vec4(vNormal, 1.0)).xyz;
     gl_Position = modelViewProj * vec4(vPosition, 1.0);
 }
