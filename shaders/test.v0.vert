@@ -16,6 +16,7 @@ out vec3 normal;
 void main()
 {
     TexCoord =  vTexCoord;
-    normal = (normalMatrix * vec4(vNormal, 1.0)).xyz;
+    // normal = (normalMatrix * vec4(vNormal, 1.0)).xyz;
+    normal = vNormal;
     gl_Position = modelViewProj * vec4(vPosition, 1.0);
 }

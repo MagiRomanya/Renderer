@@ -74,7 +74,7 @@ void Object::updateModelMatrix(){
     model = glm::scale(model, scaling);
 
     // Translation
-    model = glm::translate(model, translation / scaling); // Component-wise division
+    model = glm::translate(model, - translation / scaling); // Component-wise division
 
     // Rotation
     model = glm::rotate(model, radians.x, glm::vec3(1,0,0));

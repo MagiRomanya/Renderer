@@ -5,11 +5,15 @@
 bool is_inside_triangle(glm::vec3 xa, glm::vec3 xb, glm::vec3 xc, glm::vec3 point){
     glm::vec3 normal = glm::normalize(glm::cross(xb-xa, xc-xa));
 
-    if ( glm::dot(glm::cross(xb-xa, point -xa), normal) >= 0 ) return true;
-    if ( glm::dot(glm::cross(xc-xb, point -xb), normal) >= 0 ) return true;
-    if ( glm::dot(glm::cross(xa-xc, point -xc), normal) >= 0 ) return true;
+    return glm::dot(glm::cross(xb - xa, point - xa), normal) >= 0.0f &&
+           glm::dot(glm::cross(xc - xb, point - xb), normal) >= 0.0f &&
+           glm::dot(glm::cross(xa - xc, point - xc), normal) >= 0.0f;
 
-    return false;
+    // if ( glm::dot(glm::cross(xb-xa, point -xa), normal) < 0 ) return false;
+    // if ( glm::dot(glm::cross(xc-xb, point -xb), normal) < 0 ) return false;
+    // if ( glm::dot(glm::cross(xa-xc, point -xc), normal) < 0 ) return false;
+
+    // return true;
 }
 
 intersection_point ray_intersects_triangle(glm::vec3 xa, glm::vec3 xb, glm::vec3 xc, glm::vec3 direction, glm::vec3 position){
@@ -36,37 +40,38 @@ intersection_point ray_intersects_triangle(glm::vec3 xa, glm::vec3 xb, glm::vec3
 // RESOURCES: https://en.wikipedia.org/wiki/Point_in_polygon
 //            https://courses.cs.washington.edu/courses/cse457/09sp/lectures/triangle_intersection.pdf
 //            https://www.usna.edu/Users/oceano/raylee/SM223/Ch12_5_Stewart(2016).pdf
-bool is_inside(const SimpleMesh &m, glm::vec3 point){
+bool is_inside(const Object &obj, glm::vec3 point){
     /* Checks weather or not a point is inside the volume of the mesh */
-    bool inside = false;
-    // Cast 3 rays and count how many intersactions are there
+    // Cast 3 rays and count how many intersactions with the mesh are there
+    const SimpleMesh& m = *obj.mesh;
     unsigned int after;
     unsigned int before;
     glm::vec3 directions[] = {glm::vec3(1.0f, 0.0f, 0.0f),  // x direction
                               glm::vec3(0.0f, 1.0f, 0.0f),  // y direction
                               glm::vec3(0.0f, 0.0f, 1.0f)}; // z direction
 
+    char chardir[3] = {'x', 'y', 'z'};
+    std::vector<glm::vec3> verts;
+    verts.reserve(m.vertices.size());
+    for (int i = 0; i < m.vertices.size(); i++){
+        const glm::vec3& vert = glm::vec3(obj.model * glm::vec4(m.vertices[i].Position, 1.0f));
+        verts.push_back(vert);
+    }
     for (int d = 0; d < 3; d++) {
         after = 0;
         before = 0;
         for (int i = 0; i < m.triangles.size(); i++) {
             const Triangle &t = m.triangles[i];
             intersection_point p = ray_intersects_triangle(
-                m.vertices[t.a].Position, m.vertices[t.b].Position,
-                m.vertices[t.c].Position, directions[d],
-                point);
-            if (p.intersected){
-                if (p.t < 0.0f){
-                    before++;
-                }
-                else if (p.t > 0.0f){
-                    after++;
-                }
-                else if (p.t == 0.0f){
-                    return false;
-                }
+                verts[t.a], verts[t.b], verts[t.c], directions[d], point);
+
+            if (p.intersected) {
+              if (p.t < 0.0f) before++;
+              else if (p.t > 0.0f) after++;
+              else if (p.t == 0.0f) return false;
             }
         }
+        std::cout << chardir[d] << " A: " << after << " B: "<< before << std::endl;
         if (before % 2 == 0) return false;
         if (after % 2 == 0)  return false;
     }

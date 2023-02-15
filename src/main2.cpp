@@ -2,16 +2,16 @@
 #include <stdlib.h>
 
 #include "renderer.h"
+#include "intersection.h"
 
-Renderer renderer = Renderer();
+
 
 int main(int argc, char *argv[]) {
 
     std::cout << "The renderer started" << std::endl;
 
+    Renderer renderer = Renderer();
     GLFWwindow* window = renderer.window;
-    // glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
-    // glfwSetCursorPosCallback(window, mouse_callback);
 
     ///////////////////////////////
     SimpleMesh mesh = SimpleMesh();
@@ -38,6 +38,32 @@ int main(int argc, char *argv[]) {
     obj2.loadTexture("gandalf", "../img/gandalf.png");
     renderer.addObject(&obj2);
 
+    SimpleMesh mesh3;
+    CreateBox(mesh3, 1, 1, 1);
+    Object obj3 = Object(&mesh3, shader_normal);
+    obj3.translation = glm::vec3(0,-5,-10);
+    obj3.scaling = glm::vec3(0.1f);
+    obj3.updateModelMatrix();
+    obj3.loadTexture("gandalf", "../img/gandalf.png");
+    renderer.addObject(&obj3);
+
+    // Axis rendering
+    Object xaxis = Object(&mesh3, shader_normal);
+    xaxis.translation = obj3.translation;
+    xaxis.scaling = glm::vec3(100.0f, 0.01f, 0.01f);
+    xaxis.updateModelMatrix();
+    renderer.addObject(&xaxis);
+    Object yaxis = Object(&mesh3, shader_normal);
+    yaxis.translation = obj3.translation;
+    yaxis.scaling = glm::vec3(0.01f, 100.0f, 0.01f);
+    yaxis.updateModelMatrix();
+    renderer.addObject(&yaxis);
+    Object zaxis = Object(&mesh3, shader_normal);
+    zaxis.translation = obj3.translation;
+    zaxis.scaling = glm::vec3(0.001f, 0.01f, 100.0f);
+    zaxis.updateModelMatrix();
+    renderer.addObject(&zaxis);
+
     // Render loop
     while (!glfwWindowShouldClose(window)){
         // Input
@@ -45,6 +71,10 @@ int main(int argc, char *argv[]) {
 
         // Render
         renderer.render();
+
+        if (is_inside(obj2,
+                      glm::vec3(obj3.model * glm::vec4(obj3.mesh->vertices[0].Position, 1.0f))))
+            std::cout << "The object is inside" << std::endl;
 
         // Swap buffers + check events
         glfwSwapBuffers(window);

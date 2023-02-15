@@ -14,6 +14,7 @@ set(SOURCE_FILES
   src/mesh.cpp
   src/main2.cpp
   src/renderer.cpp
+  src/intersection.cpp
 )
 # Creates a library if added as a subdirectory or compiles it as
 # an executable if run as a top level CMakeLists.txt
