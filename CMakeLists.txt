@@ -4,7 +4,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED true)
 # compile_commands.json
 set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
 
-project(renderer)
+project(renderer VERSION 0.1)
 
 set(SOURCE_FILES
   src/glad.c
@@ -12,16 +12,21 @@ set(SOURCE_FILES
   src/object.cpp
   src/camera.cpp
   src/mesh.cpp
-  src/main2.cpp
+  # src/main.cpp
   src/renderer.cpp
   src/intersection.cpp
 )
+
+
+set(SHADER_PATH "${PROJECT_SOURCE_DIR}/shaders")
+set(TEXTURE_PATH "${PROJECT_SOURCE_DIR}/img")
+
 # Creates a library if added as a subdirectory or compiles it as
 # an executable if run as a top level CMakeLists.txt
 if(PROJECT_IS_TOP_LEVEL)
   message("${PROJECT_NAME} compiled as a standalone")
-
-  # set(SOURCE_FILES ${SOURCE_FILES} src/main2.cpp)
+  configure_file(include/shader_path.h.in ../include/shader_path.h)
+  set(SOURCE_FILES ${SOURCE_FILES} src/main.cpp)
   add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 else()
   message("${PROJECT_NAME} added as subdirectory")

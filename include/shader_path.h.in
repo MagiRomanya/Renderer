@@ -1,0 +1,10 @@
+#ifndef SHADER_PATH_H_
+#define SHADER_PATH_H_
+#include <iostream>
+
+#define RENDERER_VERSION_MAJOR @renderer_VERSION_MAJOR@
+#define RENDERER_VERSION_MINOR @renderer_VERSION_MINOR@
+#define SHADER_PATH "@SHADER_PATH@"
+#define TEXTURE_PATH "@TEXTURE_PATH@"
+
+#endif // SHADER_PATH_H_
