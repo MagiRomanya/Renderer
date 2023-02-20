@@ -37,6 +37,8 @@ class Object{
         Object() {}
         Object(SimpleMesh* mesh, Shader shader);
 
+        inline glm::vec3 model_times_vec3(const glm::vec3 &v) const { return glm::vec3(model * glm::vec4(v, 1)); }
+
         void updateModelMatrix();
 
         void render();

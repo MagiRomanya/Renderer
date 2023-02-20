@@ -6,13 +6,14 @@
 #include "intersection.h"
 
 
-
 int main(int argc, char *argv[]) {
     std::cout << "The renderer started" << std::endl;
 
     Renderer renderer = Renderer();
     GLFWwindow* window = renderer.window;
 
+    ///////////////////////////////
+    /////////OBJECT CREATION///////
     ///////////////////////////////
     SimpleMesh mesh = SimpleMesh();
 
@@ -27,11 +28,14 @@ int main(int argc, char *argv[]) {
     obj.loadTexture("gandalf", TEXTURE_PATH"/gandalf.png");
     renderer.addObject(&obj);
 
+    /////////// OBJECT TO KNOW IF INSIDE
     SimpleMesh mesh2;
     Shader shader_normal = Shader(SHADER_PATH"/test.v0.vert", SHADER_PATH"/normals.frag");
-    // mesh2.loadFromFile("../img/bunny.obj");
     CreateBox(mesh2, 1, 1, 1);
     Object obj2 = Object(&mesh2, shader_normal);
+    std::vector<Edge> internal;
+    std::vector<Edge> external;
+    obj2.mesh->boundary(internal, external);
     obj2.translation = glm::vec3(0,0,-10);
     obj2.scaling = glm::vec3(1);
     obj2.updateModelMatrix();
@@ -60,7 +64,7 @@ int main(int argc, char *argv[]) {
     renderer.addObject(&yaxis);
     Object zaxis = Object(&mesh3, shader_normal);
     zaxis.translation = obj3.translation;
-    zaxis.scaling = glm::vec3(0.001f, 0.01f, 100.0f);
+    zaxis.scaling = glm::vec3(0.01f, 0.01f, 100.0f);
     zaxis.updateModelMatrix();
     renderer.addObject(&zaxis);
 
@@ -73,7 +77,7 @@ int main(int argc, char *argv[]) {
         renderer.render();
 
         if (is_inside(obj2,
-                      glm::vec3(obj3.model * glm::vec4(obj3.mesh->vertices[0].Position, 1.0f))))
+                      glm::vec3(obj3.model * glm::vec4(obj3.mesh->aproximate_center(), 1.0f))))
             std::cout << "The object is inside" << std::endl;
 
         // Swap buffers + check events

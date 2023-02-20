@@ -9,9 +9,9 @@ struct intersection_point{
 };
 
 
-intersection_point ray_intersects_triangle(glm::vec3 xa, glm::vec3 xb, glm::vec3 xc, glm::vec3 direction, glm::vec3 position);
 
-bool is_inside_triangle(glm::vec3 xa, glm::vec3 xb, glm::vec3 xc, glm::vec3 point);
+bool is_inside_triangle(const std::unordered_map<Edge, Edge> &map,const Triangle &tri, glm::vec3 xa, glm::vec3 xb, glm::vec3 xc, glm::vec3 point);
+bool is_inside_triangle(const Object &obj, const Triangle &tri, glm::vec3 point);
 
 bool is_inside(const Object &obj, glm::vec3 point);
 

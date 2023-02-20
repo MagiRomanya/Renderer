@@ -12,7 +12,7 @@ set(SOURCE_FILES
   src/object.cpp
   src/camera.cpp
   src/mesh.cpp
-  # src/main.cpp
+  src/edge.cpp
   src/renderer.cpp
   src/intersection.cpp
 )

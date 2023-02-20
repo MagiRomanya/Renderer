@@ -20,8 +20,6 @@
 #define WIDTH 600
 
 
-// void framebuffer_size_callback(GLFWwindow* window, int width, int height);
-
 class Renderer{
     public:
         GLFWwindow* window;

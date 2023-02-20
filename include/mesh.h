@@ -10,6 +10,8 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
+#include <unordered_map>
+
 #include "edge.h"
 #include "glad/glad.h"
 
@@ -35,7 +37,11 @@ class SimpleMesh {
         std::vector<unsigned int> indices;
         std::vector<SimpleTexture> textures;
         std::vector<Triangle> triangles;
+
+        // Weather or not the vertex positions will change
         bool isDynamic = false;
+
+        std::unordered_map<Edge, Edge> edge_map;
 
         // Constructor
         SimpleMesh(){}
@@ -47,12 +53,14 @@ class SimpleMesh {
         }
 
         // Geometry related functions
-        void boundary(std::vector<Edge> &internalEdges, std::vector<Edge> &externalEdges) const ;
+        void boundary(std::vector<Edge> &internalEdges, std::vector<Edge> &externalEdges) ;
 
         double distance(int i, int j) const;
         double distance2(int i, int j) const;
 
         void calculate_normals();
+
+        glm::vec3 aproximate_center() const;
 
         // OpenGL related functions
         void createVAO();

@@ -2,22 +2,54 @@
 #include <glm/glm.hpp>
 #include <glm/geometric.hpp>
 
-bool is_inside_triangle(glm::vec3 xa, glm::vec3 xb, glm::vec3 xc, glm::vec3 point){
-    glm::vec3 normal = glm::normalize(glm::cross(xb-xa, xc-xa));
+bool is_inside_triangle(const std::unordered_map<Edge, Edge> &map,const Triangle &tri,
+                        glm::vec3 xa, glm::vec3 xb, glm::vec3 xc, glm::vec3 point){
 
-    return glm::dot(glm::cross(xb - xa, point - xa), normal) >= 0.0f &&
-           glm::dot(glm::cross(xc - xb, point - xb), normal) >= 0.0f &&
-           glm::dot(glm::cross(xa - xc, point - xc), normal) >= 0.0f;
+  glm::vec3 normal = glm::normalize(glm::cross(xb - xa, xc - xa));
+  float condition;
+  Edge edge;
+  glm::vec3 coord[] = {xb, xc, xa};
+  glm::vec3 coord2[] = {xa, xb, xc};
 
-    // if ( glm::dot(glm::cross(xb-xa, point -xa), normal) < 0 ) return false;
-    // if ( glm::dot(glm::cross(xc-xb, point -xb), normal) < 0 ) return false;
-    // if ( glm::dot(glm::cross(xa-xc, point -xc), normal) < 0 ) return false;
+  int nodes[] =  {tri.b, tri.c, tri.a};
+  int nodes2[] =  {tri.a, tri.b, tri.c};
 
-    // return true;
+  for (int i = 0; i < 3; i++){
+      condition = glm::dot(glm::cross(coord[i] - coord2[i], point - coord2[i]), normal);
+      edge = Edge(nodes[i], nodes2[i], -1);
+      if (condition < 0.0f) return false;
+      if (condition == 0.0f) { // Intersection
+          if (map.at(edge).a >= 0){
+              if (edge.a > edge.b)
+                  return false;
+          }
+      }
+  }
+
+  return true;
+  // How this used to work
+  {
+  condition = glm::dot(glm::cross(xb - xa, point - xa), normal);
+  edge = Edge(tri.b, tri.a, -1);
+  if (condition < 0.0f) return false;
+  if (condition == 0.0f) { // point intersects with xb -xa edge
+      if (map.at(edge).a >= 0){
+          if (edge.a > edge.b)
+              return false;
+      }
+  }
+  return glm::dot(glm::cross(xb - xa, point - xa), normal) >= 0.0f &&
+         glm::dot(glm::cross(xc - xb, point - xb), normal) >= 0.0f &&
+         glm::dot(glm::cross(xa - xc, point - xc), normal) >= 0.0f;
+  }
 }
 
-intersection_point ray_intersects_triangle(glm::vec3 xa, glm::vec3 xb, glm::vec3 xc, glm::vec3 direction, glm::vec3 position){
+intersection_point ray_intersects_triangle(const Object &obj, const Triangle &tri, glm::vec3 direction, glm::vec3 position){
     /* Checks if a ray intersects with a triangle with sides xa, xb & xc */
+    // Triangle vertex in worlds position
+    const glm::vec3& xa = obj.model_times_vec3(obj.mesh->vertices[tri.a].Position);
+    const glm::vec3& xb = obj.model_times_vec3(obj.mesh->vertices[tri.b].Position);
+    const glm::vec3& xc = obj.model_times_vec3(obj.mesh->vertices[tri.c].Position);
 
     intersection_point p = {false, 0.0f};
 
@@ -31,12 +63,12 @@ intersection_point ray_intersects_triangle(glm::vec3 xa, glm::vec3 xb, glm::vec3
     glm::vec3 plane_ray_intersection = position + t * direction;
 
     // Check if the intersection point is inside the triangle
-    p.intersected = is_inside_triangle(xa, xb, xc, plane_ray_intersection);
+    p.intersected = is_inside_triangle(obj.mesh->edge_map, tri, xa, xb, xc, plane_ray_intersection);
     p.t = t;
     return p;
 }
 
-// NOTE: Untested code, need to see if it makes sense.
+// FIXME: This function does not work properly
 // RESOURCES: https://en.wikipedia.org/wiki/Point_in_polygon
 //            https://courses.cs.washington.edu/courses/cse457/09sp/lectures/triangle_intersection.pdf
 //            https://www.usna.edu/Users/oceano/raylee/SM223/Ch12_5_Stewart(2016).pdf
@@ -51,19 +83,12 @@ bool is_inside(const Object &obj, glm::vec3 point){
                               glm::vec3(0.0f, 0.0f, 1.0f)}; // z direction
 
     char chardir[3] = {'x', 'y', 'z'};
-    std::vector<glm::vec3> verts;
-    verts.reserve(m.vertices.size());
-    for (int i = 0; i < m.vertices.size(); i++){
-        const glm::vec3& vert = glm::vec3(obj.model * glm::vec4(m.vertices[i].Position, 1.0f));
-        verts.push_back(vert);
-    }
     for (int d = 0; d < 3; d++) {
         after = 0;
         before = 0;
         for (int i = 0; i < m.triangles.size(); i++) {
             const Triangle &t = m.triangles[i];
-            intersection_point p = ray_intersects_triangle(
-                verts[t.a], verts[t.b], verts[t.c], directions[d], point);
+            intersection_point p = ray_intersects_triangle(obj, t, directions[d], point);
 
             if (p.intersected) {
               if (p.t < 0.0f) before++;

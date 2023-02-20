@@ -1,24 +1,9 @@
 #include "mesh.h"
-#include <unordered_map>
 #include <iostream>
 #include "math.h"
 #include "glm/geometric.hpp"
 
-// Have a way to hash the Edge class
-namespace std{
-  template<>
-  struct hash<Edge>{
-    unsigned int operator()(const Edge& key) const{
-      return 100000 * key.a + key.b;
-    }
-  };
-}
-
-bool operator==(const Edge& e1, const Edge& e2){
-    return (e1.a == e2.a) and (e1.b == e2.b);
-}
-
-void SimpleMesh::boundary(std::vector<Edge> &internalEdges, std::vector<Edge> &externalEdges) const {
+void SimpleMesh::boundary(std::vector<Edge> &internalEdges, std::vector<Edge> &externalEdges) {
     /* Fills the internal edges and external edges vectors. In the internal edges vectors, we order the vector
      * by puting a semi-edge and its inverse next to each other. */
 
@@ -69,7 +54,7 @@ void SimpleMesh::boundary(std::vector<Edge> &internalEdges, std::vector<Edge> &e
         else{
             in_vector[e] = edges.size();
             edges.push_back(e);
-            edges.push_back(Edge(-1,-1,-1));
+            edges.push_back(Edge(-1,-1,-1)); // dummy edge
         }
     }
 
@@ -82,10 +67,14 @@ void SimpleMesh::boundary(std::vector<Edge> &internalEdges, std::vector<Edge> &e
     for (size_t i=0; i < edges.size(); i+=2){
         if (edges[i+1].a < 0){ // If the 2nd edge is dummy we have found a external edge with no inverse
             externalEdges.push_back(edges[i]);
+            edge_map[edges[i]] = Edge(-1,-1,-1);
         }
         else{
             internalEdges.push_back(edges[i]);
             internalEdges.push_back(edges[i+1]);
+
+            edge_map[edges[i]] = edges[i+1];
+            edge_map[edges[i+1]] = edges[i];
         }
     }
 }
@@ -462,4 +451,13 @@ void CreateBox(SimpleMesh &m, float dx, float dy, float dz){
 
     m.updateIndicesFromTriangles();
     m.createVAO();
+}
+
+
+glm::vec3 SimpleMesh::aproximate_center() const{
+    glm::vec3 center = glm::vec3(0.0f);
+    for (int i = 0; i < vertices.size(); i++){
+        center += vertices[i].Position;
+    }
+    return 1.0f / vertices.size() * center;
 }
