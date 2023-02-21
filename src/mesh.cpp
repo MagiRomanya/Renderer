@@ -3,7 +3,7 @@
 #include "math.h"
 #include "glm/geometric.hpp"
 
-void SimpleMesh::boundary(std::vector<Edge> &internalEdges, std::vector<Edge> &externalEdges) {
+void SimpleMesh::boundary(std::vector<Edge> &internalEdges, std::vector<Edge> &externalEdges) const {
     /* Fills the internal edges and external edges vectors. In the internal edges vectors, we order the vector
      * by puting a semi-edge and its inverse next to each other. */
 
@@ -67,15 +67,26 @@ void SimpleMesh::boundary(std::vector<Edge> &internalEdges, std::vector<Edge> &e
     for (size_t i=0; i < edges.size(); i+=2){
         if (edges[i+1].a < 0){ // If the 2nd edge is dummy we have found a external edge with no inverse
             externalEdges.push_back(edges[i]);
-            edge_map[edges[i]] = Edge(-1,-1,-1);
         }
         else{
             internalEdges.push_back(edges[i]);
             internalEdges.push_back(edges[i+1]);
-
-            edge_map[edges[i]] = edges[i+1];
-            edge_map[edges[i+1]] = edges[i];
         }
+    }
+}
+
+void SimpleMesh::semiEdgeInfo(){
+    std::vector<Edge> internal;
+    std::vector<Edge> external;
+
+    this->boundary(internal, external);
+
+    for (int i = 0; i < internal.size(); i+=2){
+        edge_map[internal[i]] = internal[i+1];
+        edge_map[internal[i+1]] = internal[i];
+    }
+    for (int i = 0; i < external.size(); i++){
+        edge_map[external[i]] = Edge(); // dummy edge
     }
 }
 
@@ -452,7 +463,6 @@ void CreateBox(SimpleMesh &m, float dx, float dy, float dz){
     m.updateIndicesFromTriangles();
     m.createVAO();
 }
-
 
 glm::vec3 SimpleMesh::aproximate_center() const{
     glm::vec3 center = glm::vec3(0.0f);

@@ -117,9 +117,10 @@ void Renderer::renderGUI(){
             obj->updateModelMatrix();
         }
 
+        ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+
         if (changed)
             obj->updateModelMatrix();
-
         ImGui::End();
     }
 
@@ -139,9 +140,16 @@ void Renderer::render(){
             glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
         obj->render();
     }
+    for (int i = 0; i < debugQueue.size(); i++){
+        auto& debugObj = debugQueue[i];
+        debugObj.render();
+    }
+    debugQueue.clear();
 
     this->renderGUI();
     this->resize_framebuffer();
+
+    swapAndPoll();
 }
 
 void Renderer::resize_framebuffer(){
@@ -166,6 +174,17 @@ void Renderer::addObject(Object* obj){
     obj->view = camera.GetViewMatrix();
     obj->proj = camera.GetProjMatrix(WIDTH, HEIGHT);
     objects.push_back(obj);
+}
+void Renderer::deleteObject(Object *obj){
+    std::vector<Object*> new_objects;
+    new_objects.reserve(objects.size() - 1);
+    for (int i =0; i < objects.size(); i++){
+        Object* other = objects[i];
+        if (other != obj){
+            new_objects.push_back(other);
+        }
+    }
+    objects = new_objects;
 }
 
 void Renderer::cameraInput(){
@@ -220,4 +239,27 @@ void Renderer::cameraInput(){
     lastX = xpos;
     lastY = ypos;
     camera.ProcessMouseMovement(deltaX, deltaY);
+}
+
+void Renderer::swapAndPoll(){
+    glfwSwapBuffers(window);
+    glfwPollEvents();
+}
+
+void Renderer::addDebugCube(glm::vec3 pos, float size){
+    /* Loads a cube that will be rendered for one frame */
+    Object obj = Object(&debug_cube, debugShader);
+    obj.translation = -pos;
+    obj.scaling = glm::vec3(size);
+    obj.view = camera.GetViewMatrix();
+    int height, width;
+    glfwGetWindowSize(window, &width, &height);
+    obj.proj = camera.GetProjMatrix(width, height);
+    obj.updateModelMatrix();
+    debugQueue.push_back(obj);
+}
+
+void Renderer::createDebugCube(){
+    debugShader = Shader(SHADER_PATH"/test.v0.vert", SHADER_PATH"/normals.frag");
+    CreateBox(debug_cube, 1.0f, 1.0f, 1.0f);
 }

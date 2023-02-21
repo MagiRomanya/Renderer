@@ -4,6 +4,7 @@
 #include "renderer.h"
 #include "shader_path.h"
 #include "intersection.h"
+#include "debug_cube.hpp"
 
 
 int main(int argc, char *argv[]) {
@@ -15,6 +16,7 @@ int main(int argc, char *argv[]) {
     ///////////////////////////////
     /////////OBJECT CREATION///////
     ///////////////////////////////
+    // DebugCube cube = DebugCube(&renderer, glm::vec3(0.5f, -5.0f, -10.f), 0.5f);
     SimpleMesh mesh = SimpleMesh();
 
     CreateGrid(mesh, 5, 5, 10.0f);
@@ -33,9 +35,6 @@ int main(int argc, char *argv[]) {
     Shader shader_normal = Shader(SHADER_PATH"/test.v0.vert", SHADER_PATH"/normals.frag");
     CreateBox(mesh2, 1, 1, 1);
     Object obj2 = Object(&mesh2, shader_normal);
-    std::vector<Edge> internal;
-    std::vector<Edge> external;
-    obj2.mesh->boundary(internal, external);
     obj2.translation = glm::vec3(0,0,-10);
     obj2.scaling = glm::vec3(1);
     obj2.updateModelMatrix();
@@ -76,13 +75,9 @@ int main(int argc, char *argv[]) {
         // Render
         renderer.render();
 
-        if (is_inside(obj2,
+        if (is_inside(renderer, obj2,
                       glm::vec3(obj3.model * glm::vec4(obj3.mesh->aproximate_center(), 1.0f))))
             std::cout << "The object is inside" << std::endl;
-
-        // Swap buffers + check events
-        glfwSwapBuffers(window);
-        glfwPollEvents();
     }
 
     glfwTerminate();

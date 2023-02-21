@@ -46,6 +46,7 @@ class Object{
         void loadTexture(std::string name, std::string path);
 
         void bindTextures();
+
     private:
         static unsigned int num;
 };

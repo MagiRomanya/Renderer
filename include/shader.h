@@ -14,6 +14,7 @@ class Shader {
 
     Shader() {}
     Shader(const char* vertexPath, const char* fragmentPath);
+    ~Shader();
 
     void use();
 

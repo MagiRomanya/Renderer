@@ -53,7 +53,9 @@ class SimpleMesh {
         }
 
         // Geometry related functions
-        void boundary(std::vector<Edge> &internalEdges, std::vector<Edge> &externalEdges) ;
+        void boundary(std::vector<Edge> &internalEdges, std::vector<Edge> &externalEdges) const;
+
+        void semiEdgeInfo();
 
         double distance(int i, int j) const;
         double distance2(int i, int j) const;
