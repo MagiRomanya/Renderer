@@ -254,11 +254,12 @@ void SimpleMesh::updateTrianglesFromIndices(){
         std::cout << "ERROR triangulating from indexes" << std::endl;
         return;
     }
-    for (unsigned int i = 0; i < indices.size() / 3; i+=3){
+    for (unsigned int i = 0; i < indices.size(); i+=3){
         Triangle t;
         t.a = indices[i];
         t.b = indices[i+1];
         t.c = indices[i+2];
+        triangles.push_back(t);
     }
 }
 
@@ -470,4 +471,8 @@ glm::vec3 SimpleMesh::aproximate_center() const{
         center += vertices[i].Position;
     }
     return 1.0f / vertices.size() * center;
+}
+
+void SimpleMesh::desrtoyVAO(){
+    glDeleteVertexArrays(1, &VAO);
 }

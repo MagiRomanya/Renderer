@@ -20,11 +20,9 @@ class Object{
         std::string name;
 
         SimpleMesh* mesh;
-        Shader shader;
+        Shader* shader;
 
         bool render_as_wireframe = false;
-        std::vector<std::string> texture_name;
-        std::vector<unsigned int> texture_id;
 
         glm::mat4 model = glm::mat4(1.0f);
         glm::mat4 view = glm::mat4(1.0f);
@@ -35,20 +33,36 @@ class Object{
         glm::vec3 scaling = glm::vec3(1.0f);
 
         Object() {}
-        Object(SimpleMesh* mesh, Shader shader);
+        Object(SimpleMesh* mesh, Shader* shader);
 
-        inline glm::vec3 model_times_vec3(const glm::vec3 &v) const { return glm::vec3(model * glm::vec4(v, 1)); }
+        inline glm::vec3 toWorld(const glm::vec3 &v) const { return glm::vec3(model * glm::vec4(v, 1)); }
 
         void updateModelMatrix();
 
         void render();
 
-        void loadTexture(std::string name, std::string path);
+        // void loadTexture(const std::string &name, const std::string &path);
+        void useTexture(const std::string &name, const unsigned int id);
 
         void bindTextures();
 
+        inline glm::vec3 center() {
+            if (!_calculated_center) {
+                _center = this->mesh->aproximate_center();
+            }
+            return _center;
+        }
+
     private:
+        std::vector<std::string> texture_name;
+        std::vector<unsigned int> texture_id;
+
+        bool _calculated_center;
+        glm::vec3 _center;
+
         static unsigned int num;
+
+
 };
 
 #endif // OBJECT_H_

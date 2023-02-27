@@ -33,7 +33,7 @@ class Renderer{
         Renderer(){
             camera = Camera();
             window = CreateWindow();
-            createDebugCube();
+            // createDebugCubeMesh();
         }
 
         ~Renderer();
@@ -44,9 +44,11 @@ class Renderer{
 
         void addObject(Object *obj);
 
+        void addObjectQueue(Object &obj, glm::vec3 pos, float size);
+
         void deleteObject(Object *obj);
 
-        void addDebugCube(glm::vec3 pos, float size);
+        // void addDebugCube(glm::vec3 pos, float size);
 
         void renderGUI();
 
@@ -60,14 +62,11 @@ class Renderer{
 
         void resize_framebuffer();
 
-        void createDebugCube();
+        // void createDebugCubeMesh();
 
         GLFWwindow* CreateWindow();
 
         int screenWidth, screenHeight;
-
-        SimpleMesh debug_cube;
-        Shader debugShader;
 };
 
 #endif // RENDERER_H_

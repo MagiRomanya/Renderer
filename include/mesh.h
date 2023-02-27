@@ -35,7 +35,6 @@ class SimpleMesh {
         // mesh data
         std::vector<Vertex> vertices;
         std::vector<unsigned int> indices;
-        std::vector<SimpleTexture> textures;
         std::vector<Triangle> triangles;
 
         // Weather or not the vertex positions will change
@@ -45,11 +44,11 @@ class SimpleMesh {
 
         // Constructor
         SimpleMesh(){}
-        SimpleMesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices,
-             std::vector<SimpleTexture> textures) {
+        SimpleMesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices) {
             this->vertices = vertices;
             this->indices = indices;
-            this->textures = textures;
+            this->updateTrianglesFromIndices();
+            this->createVAO();
         }
 
         // Geometry related functions
@@ -74,12 +73,15 @@ class SimpleMesh {
         unsigned int VAO, VBO, EBO;
 
         void updateIndicesFromTriangles();
+        void desrtoyVAO();
 
     private:
+
         void updateTrianglesFromIndices();
 };
 
 void CreateGrid(SimpleMesh &m, int nY, int nZ, double step);
 
 void CreateBox(SimpleMesh &m, float dx, float dy, float dz);
+
 #endif

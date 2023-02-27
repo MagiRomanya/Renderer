@@ -14,6 +14,7 @@ set(SOURCE_FILES
   src/mesh.cpp
   src/edge.cpp
   src/renderer.cpp
+  src/object_manager.cpp
   src/intersection.cpp
 )
 

@@ -1,4 +1,5 @@
 #include "renderer.h"
+#include "object_manager.hpp"
 
 Renderer::~Renderer(){
     ImGui_ImplOpenGL3_Shutdown();
@@ -140,9 +141,9 @@ void Renderer::render(){
             glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
         obj->render();
     }
+
     for (int i = 0; i < debugQueue.size(); i++){
-        auto& debugObj = debugQueue[i];
-        debugObj.render();
+        debugQueue[i].render();
     }
     debugQueue.clear();
 
@@ -175,6 +176,7 @@ void Renderer::addObject(Object* obj){
     obj->proj = camera.GetProjMatrix(WIDTH, HEIGHT);
     objects.push_back(obj);
 }
+
 void Renderer::deleteObject(Object *obj){
     std::vector<Object*> new_objects;
     new_objects.reserve(objects.size() - 1);
@@ -245,21 +247,14 @@ void Renderer::swapAndPoll(){
     glfwSwapBuffers(window);
     glfwPollEvents();
 }
-
-void Renderer::addDebugCube(glm::vec3 pos, float size){
-    /* Loads a cube that will be rendered for one frame */
-    Object obj = Object(&debug_cube, debugShader);
+void Renderer::addObjectQueue(Object &obj, glm::vec3 pos, float size) {
+    // TODO: Understand the sign of this position
     obj.translation = -pos;
     obj.scaling = glm::vec3(size);
     obj.view = camera.GetViewMatrix();
     int height, width;
-    glfwGetWindowSize(window, &width, &height);
-    obj.proj = camera.GetProjMatrix(width, height);
+    obj.proj = camera.GetProjMatrix();
     obj.updateModelMatrix();
-    debugQueue.push_back(obj);
-}
 
-void Renderer::createDebugCube(){
-    debugShader = Shader(SHADER_PATH"/test.v0.vert", SHADER_PATH"/normals.frag");
-    CreateBox(debug_cube, 1.0f, 1.0f, 1.0f);
+    debugQueue.push_back(obj);
 }

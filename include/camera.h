@@ -46,6 +46,9 @@ class Camera
         float near = 0.1f;
         float far  = 200.0f;
 
+        float height = 1.0f;
+        float width = 1.0f;
+
         // constructor with vectors
         Camera(glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f), float yaw = YAW, float pitch = PITCH);
 
@@ -60,9 +63,15 @@ class Camera
 
         inline glm::mat4 GetProjMatrix(int width, int height)
         {
+            this->width = width;
+            this->height = height;
             return glm::perspective(fov, ( (float) width) / height, near, far);
         }
 
+        inline glm::mat4 GetProjMatrix()
+        {
+            return glm::perspective(fov, ( (float) width) / height, near, far);
+        }
         // processes input received from any keyboard-like input system. Accepts input parameter in the form of camera defined ENUM (to abstract it from windowing systems)
         void ProcessKeyboard(Camera_Movement direction, float deltaTime);
 
