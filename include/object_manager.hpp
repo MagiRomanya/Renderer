@@ -30,6 +30,10 @@ class ObjectManager{
         // Utilities
         inline unsigned int getTextureID(const std::string &name) { return m_texture[name]; }
 
+        inline SimpleMesh* getMesh(const std::string &name) { return &m_mesh[name]; }
+
+        inline Shader* getShader(const std::string &name) { return &m_shader[name]; }
+
     private:
         std::unordered_map<std::string, SimpleMesh> m_mesh;
         std::unordered_map<std::string, Shader> m_shader;
