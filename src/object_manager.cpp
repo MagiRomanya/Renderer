@@ -72,3 +72,25 @@ Object ObjectManager::createObject(const std::string &meshName, const std::strin
     Object output(&m_mesh[meshName], &m_shader[shaderName]);
     return output;
 }
+
+unsigned int ObjectManager::getTextureID(const std::string &name){
+    if (!m_texture.contains(name)){
+        std::cout << "ERROR::OBJECT_MANAGER::GET_TEXTURE_ID: Texture name " << name << " not found" << std::endl;
+    }
+    return m_texture[name];
+}
+
+SimpleMesh* ObjectManager::getMesh(const std::string &name){
+    if (!m_mesh.contains(name)){
+        std::cout << "ERROR::OBJECT_MANAGER::GET_MESH: Mesh name " << name << " not found" << std::endl;
+    }
+    return &m_mesh[name];
+}
+
+Shader* ObjectManager::getShader(const std::string &name){
+    if (!m_mesh.contains(name)){
+        std::cout << "ERROR::OBJECT_MANAGER::GET_SHADER: Shader name " << name << " not found" << std::endl;
+    }
+    return &m_shader[name];
+
+}

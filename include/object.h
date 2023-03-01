@@ -28,6 +28,8 @@ class Object{
         glm::mat4 view = glm::mat4(1.0f);
         glm::mat4 proj = glm::mat4(1.0f);
 
+        glm::mat4 inverse_model = glm::mat4(1.0f);
+
         glm::vec3 rotation = glm::vec3(0.0f);
         glm::vec3 translation = glm::vec3(0.0f);
         glm::vec3 scaling = glm::vec3(1.0f);
@@ -37,11 +39,12 @@ class Object{
 
         inline glm::vec3 toWorld(const glm::vec3 &v) const { return glm::vec3(model * glm::vec4(v, 1)); }
 
+        inline glm::vec3 toLocal(const glm::vec3 &v) const { return glm::vec3(inverse_model * glm::vec4(v, 1)); }
+
         void updateModelMatrix();
 
         void render();
 
-        // void loadTexture(const std::string &name, const std::string &path);
         void useTexture(const std::string &name, const unsigned int id);
 
         void bindTextures();

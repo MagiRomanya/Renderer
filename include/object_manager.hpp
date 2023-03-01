@@ -28,11 +28,11 @@ class ObjectManager{
         Object createObject(const std::string &meshName, const std::string &shaderName);
 
         // Utilities
-        inline unsigned int getTextureID(const std::string &name) { return m_texture[name]; }
+        unsigned int getTextureID(const std::string &name);
 
-        inline SimpleMesh* getMesh(const std::string &name) { return &m_mesh[name]; }
+        SimpleMesh* getMesh(const std::string &name);
 
-        inline Shader* getShader(const std::string &name) { return &m_shader[name]; }
+        Shader* getShader(const std::string &name);
 
     private:
         std::unordered_map<std::string, SimpleMesh> m_mesh;

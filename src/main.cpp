@@ -5,7 +5,6 @@
 #include "object_manager.hpp"
 #include "shader_path.h"
 #include "intersection.h"
-#include "debug_cube.hpp"
 
 int main(int argc, char *argv[]) {
     std::cout << "The renderer started" << std::endl;
