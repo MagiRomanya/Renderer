@@ -292,6 +292,61 @@ void SimpleMesh::calculate_normals(){
     }
 }
 
+void SimpleMesh::calculate_vertex_normals(){
+    std::vector<float> voronoi_total_area;
+    std::vector<std::unordered_map<int, float>> voronoi_area;
+
+    voronoi_area.resize(indices.size()); // num triangles
+    voronoi_total_area.resize(indices.size(), 0.0f); // num vertieces
+
+    // Calculate voronoi areas
+    for (int i=0; i < indices.size(); i+=3){
+        const int a = indices[i];
+        const int b = indices[i+1];
+        const int c = indices[i+2];
+
+        const float edge_length[] = {
+            glm::length(vertices[c].Position - vertices[b].Position), // a -> bc
+            glm::length(vertices[a].Position - vertices[c].Position), // b -> ca
+            glm::length(vertices[b].Position - vertices[a].Position), // x -> ab
+        };
+
+        const int abc[] = {a, b, c};
+        const int opposite1[] = {b,c,a};
+        const int opposite2[] = {c,a,b};
+
+        for (int j=0; j < 3; j++){
+            const glm::vec3& ba = vertices[opposite1[j]].Position - vertices[abc[j]].Position;
+            const glm::vec3& ca = vertices[opposite2[j]].Position - vertices[abc[j]].Position;
+            float sin_A = glm::cross(ba, ca).length();
+            float cos_A = glm::dot(ba, ca);
+            float cotan_A = cos_A / sin_A;
+
+            voronoi_area[opposite1[j]][i/3] += 1.0f / 8.0f * edge_length[j] * cotan_A;
+            voronoi_area[opposite2[j]][i/3] += 1.0f / 8.0f * edge_length[j] * cotan_A;
+
+            voronoi_total_area[i/3] += 1.0f / 8.0f * edge_length[j] * cotan_A;
+            voronoi_total_area[i/3] += 1.0f / 8.0f * edge_length[j] * cotan_A;
+        }
+    }
+    // Set normals to zero
+    for (int i=0; i < vertices.size(); i++){ vertices[i].Normal = glm::vec3(0.0f); }
+
+    // Calculate normals
+    for (int i=0; i < indices.size(); i+=3){
+        const int a = indices[i];
+        const int b = indices[i+1];
+        const int c = indices[i+2];
+        const glm::vec3& ba = vertices[b].Position - vertices[a].Position;
+        const glm::vec3& ca = vertices[c].Position - vertices[a].Position;
+        const glm::vec3 normal = glm::normalize(glm::cross(ba, ca));
+
+        vertices[a].Normal += voronoi_area[a][i/3] / voronoi_total_area[i/3] * normal;
+        vertices[b].Normal += voronoi_area[b][i/3] / voronoi_total_area[i/3] * normal;
+        vertices[c].Normal += voronoi_area[c][i/3] / voronoi_total_area[i/3] * normal;
+    }
+}
+
 void CreateBox(SimpleMesh &m, float dx, float dy, float dz){
     m.vertices.resize(8 * 3);
     m.triangles.resize(12);

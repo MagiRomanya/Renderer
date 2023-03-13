@@ -10,10 +10,9 @@
 
 class Shader {
     public:
-        unsigned int program;
-
         Shader() {}
         Shader(const char *vertexPath, const char *fragmentPath);
+        Shader(const char *vertexPath, const char *geometryPath, const char *fragmentPath);
         ~Shader();
 
         void use();
@@ -26,6 +25,12 @@ class Shader {
         void setVec3(const std::string &name, glm::vec3 value) const;
         void setVec2(const std::string &name, glm::vec2 value) const;
         void setMat4(const std::string &name, glm::mat4 value) const;
+
+        unsigned int program;
+    private:
+        std::string read_shader_soruce(const char* path);
+        unsigned int compile_shader(const std::string source, GLenum shaderType);
+
 };
 
 #endif // SHADER_H_

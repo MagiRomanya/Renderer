@@ -20,7 +20,6 @@ class Object{
         std::string name;
 
         SimpleMesh* mesh;
-        Shader* shader;
 
         bool render_as_wireframe = false;
 
@@ -41,6 +40,7 @@ class Object{
 
         inline glm::vec3 toLocal(const glm::vec3 &v) const { return glm::vec3(inverse_model * glm::vec4(v, 1)); }
 
+        inline void addShader(Shader* shader) {shaders.push_back(shader); }
         void updateModelMatrix();
 
         void render();
@@ -57,6 +57,7 @@ class Object{
         }
 
     private:
+        std::vector<Shader*> shaders;
         std::vector<std::string> texture_name;
         std::vector<unsigned int> texture_id;
 

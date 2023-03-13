@@ -52,6 +52,10 @@ void ObjectManager::loadShader(const std::string &name, const char* vertexPath, 
     m_shader[name] = Shader(vertexPath, fragmentPath);
 }
 
+void ObjectManager::loadShader(const std::string &name, const char* vertexPath, const char* geometryPath, const char* fragmentPath){
+    m_shader[name] = Shader(vertexPath, geometryPath, fragmentPath);
+}
+
 void ObjectManager::loadMesh(const std::string &name, SimpleMesh mesh){
     m_mesh[name] = SimpleMesh(mesh.vertices, mesh.indices);
 }
@@ -70,6 +74,15 @@ Object ObjectManager::createObject(const std::string &meshName, const std::strin
         std::cout << "ERROR::OBJECT_MANAGER::CREATE_OBJECT::Shader name " << shaderName << " not found in object manager" << std::endl;
     }
     Object output(&m_mesh[meshName], &m_shader[shaderName]);
+    return output;
+}
+
+Object ObjectManager::createObject(const std::string &meshName, const std::string &shader1Name,  const std::string &shader2Name) {
+    if (!m_shader.contains(shader2Name)) {
+        std::cout << "ERROR::OBJECT_MANAGER::CREATE_OBJECT::Shader name " << shader2Name << " not found in object manager" << std::endl;
+    }
+    Object output = createObject(meshName, shader1Name);
+    output.addShader(&m_shader[shader2Name]);
     return output;
 }
 

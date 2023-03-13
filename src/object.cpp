@@ -6,27 +6,29 @@ Object::Object(SimpleMesh* mesh, Shader* shader){
     num++;
     name = "object_" + std::to_string(num);
     this->mesh = mesh;
-    this->shader = shader;
+    shaders.push_back(shader);
 }
 
 void Object::render(){
-    shader->use();
+    for (unsigned int i = 0; i < shaders.size(); i++){
+        Shader* shader = shaders[i];
+        shader->use();
 
-    mesh->bind();
+        mesh->bind();
 
-    bindTextures();
+        bindTextures();
 
-    // uniforms
-    shader->setMat4("model", model);
-    shader->setMat4("view", view);
-    shader->setMat4("modelView", view * model);
-    shader->setMat4("normalMatrix", glm::inverse(glm::transpose(view * model)));
-    shader->setMat4("proj", proj);
-    shader->setMat4("modelViewProj", proj * view * model);
+        // uniforms
+        shader->setMat4("model", model);
+        shader->setMat4("view", view);
+        shader->setMat4("modelView", view * model);
+        shader->setMat4("normalMatrix",
+                        glm::inverse(glm::transpose(view * model)));
+        shader->setMat4("proj", proj);
+        shader->setMat4("modelViewProj", proj * view * model);
 
-    // std::cout << mesh.indices.size() << std::endl;
-
-    glDrawElements(GL_TRIANGLES, mesh->indices.size(), GL_UNSIGNED_INT, 0);
+        glDrawElements(GL_TRIANGLES, mesh->indices.size(), GL_UNSIGNED_INT, 0);
+    }
     // Unbind the vertex array buffer
     glBindVertexArray(0);
 }
@@ -37,10 +39,13 @@ void Object::useTexture(const std::string &name, const unsigned int id) {
 }
 
 void Object::bindTextures(){
-    for (unsigned int i = 0; i < texture_id.size(); i++){
-        glUniform1i(glGetUniformLocation(shader->program, texture_name[i].c_str()), i);
-        glActiveTexture(GL_TEXTURE0 + i);
-        glBindTexture(GL_TEXTURE_2D, texture_id[i]);
+    for (unsigned int s = 0; s < shaders.size(); s++){
+        Shader* shader = shaders[s];
+        for (unsigned int i = 0; i < texture_id.size(); i++){
+            glUniform1i(glGetUniformLocation(shader->program, texture_name[i].c_str()), i);
+            glActiveTexture(GL_TEXTURE0 + i);
+            glBindTexture(GL_TEXTURE_2D, texture_id[i]);
+        }
     }
 }
 

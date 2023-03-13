@@ -57,9 +57,12 @@ class SimpleMesh {
         void semiEdgeInfo();
 
         double distance(int i, int j) const;
+
         double distance2(int i, int j) const;
 
         void calculate_normals();
+
+        void calculate_vertex_normals();
 
         glm::vec3 aproximate_center() const;
 

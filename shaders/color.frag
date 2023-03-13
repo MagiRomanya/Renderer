@@ -1,12 +1,11 @@
 #version 330 core
 
 in vec2 TexCoord;
-
-uniform sampler2D gandalf;
+in vec3 normal;
 
 out vec4 FragColor;
 
 void main()
 {
-    FragColor = texture(gandalf, TexCoord);
+    FragColor = vec4(0.3, 0.7, 0.4, 0);
 }

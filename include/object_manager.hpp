@@ -22,10 +22,14 @@ class ObjectManager{
 
         void loadShader(const std::string &name, const char* vertexPath, const char* fragmentPath);
 
+        void loadShader(const std::string &name, const char* vertexPath, const char* geometryPath, const char* fragmentPath);
+
         void loadTexture(const std::string &name, std::string path);
 
         // Create object
         Object createObject(const std::string &meshName, const std::string &shaderName);
+
+        Object createObject(const std::string &meshName, const std::string &shader1Name, const std::string &shader2Name);
 
         // Utilities
         unsigned int getTextureID(const std::string &name);
