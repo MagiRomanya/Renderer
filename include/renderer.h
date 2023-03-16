@@ -17,6 +17,7 @@
 #include "object.h"
 #include "shader_path.h"
 #include "gui_element.hpp"
+#include "little_axis.hpp"
 
 #define HEIGHT 800
 #define WIDTH 600
@@ -31,11 +32,11 @@ class Renderer{
 
         Camera camera;
 
-        Renderer(){
+        Renderer() {
             camera = Camera();
             camera.Position = glm::vec3(0,0,1);
             window = CreateWindow();
-            // createDebugCubeMesh();
+            littleAxis = LittleAxis(&camera);
         }
 
         ~Renderer();
@@ -71,6 +72,8 @@ class Renderer{
         int screenWidth, screenHeight;
 
         std::vector<GUI_element*> m_gui_elements;
+
+        LittleAxis littleAxis;
 };
 
 #endif // RENDERER_H_
