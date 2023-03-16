@@ -155,6 +155,7 @@ void Renderer::render(){
     }
     debugQueue.clear();
 
+    glClear(GL_DEPTH_BUFFER_BIT);
     littleAxis->render();
     this->renderGUI();
     this->resize_framebuffer();
