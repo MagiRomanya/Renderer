@@ -44,7 +44,8 @@ class Camera
         float Zoom;
         bool is_orbital = true;
 
-        float fov  = 30.0f;
+        // float fov  = 30.0f;
+        float fov  = 60.0f;
         float near = 0.1f;
         float far  = 200.0f;
 

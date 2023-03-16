@@ -16,6 +16,7 @@ set(SOURCE_FILES
   src/renderer.cpp
   src/object_manager.cpp
   src/intersection.cpp
+  src/little_axis.cpp
 )
 
 

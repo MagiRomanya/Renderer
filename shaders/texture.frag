@@ -8,7 +8,7 @@ uniform sampler2D gandalf;
 
 out vec4 FragColor;
 
-vec3 lightPos = vec3(0, 10, -5);
+vec3 lightPos = vec3(0.0, 10.0, 5.0);
 vec3 lightColor = vec3(1, 1, 1);
 const float diffuseIntensity = 1;
 vec3 ambientLight = vec3(0.1, 0.1, 0.1);
