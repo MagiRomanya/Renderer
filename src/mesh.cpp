@@ -149,6 +149,7 @@ void SimpleMesh::createVAO(){
 
     glBindVertexArray(VAO);
 
+
     // Upload the data of the mesh
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     // Structs are sequential so we can upload the memory like this

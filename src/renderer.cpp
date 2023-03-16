@@ -8,6 +8,7 @@ Renderer::~Renderer(){
 
     glfwDestroyWindow(window);
     glfwTerminate();
+    delete littleAxis;
 }
 
 GLFWwindow* Renderer::CreateWindow(){
@@ -140,7 +141,6 @@ void Renderer::renderGUI(){
 void Renderer::render(){
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
     for (int i = 0; i < objects.size(); i++){
         Object* obj = objects[i];
         if (obj->render_as_wireframe)
@@ -155,6 +155,7 @@ void Renderer::render(){
     }
     debugQueue.clear();
 
+    littleAxis->render();
     this->renderGUI();
     this->resize_framebuffer();
 

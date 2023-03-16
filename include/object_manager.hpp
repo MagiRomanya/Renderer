@@ -13,6 +13,7 @@
  * With this memory it can generate objects in a recipie-like manner */
 class ObjectManager{
     public:
+        ObjectManager() {};
         ~ObjectManager();
 
         // Load stuff

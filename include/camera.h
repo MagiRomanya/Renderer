@@ -74,6 +74,8 @@ class Camera
         {
             return glm::perspective(glm::radians(fov), ((float) width) / ((float) height), near, far);
         }
+
+        inline float getAspectRatio(){ return ((float) width) / ((float) height); }
         // processes input received from any keyboard-like input system. Accepts input parameter in the form of camera defined ENUM (to abstract it from windowing systems)
         void ProcessKeyboard(Camera_Movement direction, float deltaTime);
 

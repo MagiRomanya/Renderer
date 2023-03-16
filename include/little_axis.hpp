@@ -13,38 +13,38 @@
 class LittleAxis {
     public:
         LittleAxis(Camera* camera) : camera(camera) {
-            manager = ObjectManager();
-            manager.loadMesh("axis", MESH_PATH"/3d_axis.obj");
-            mesh = manager.getMesh("axis");
+            mesh = SimpleMesh();
+            const char* path = MESH_PATH"/3d_axis.obj";
+            mesh.loadFromFile(path);
             shader = Shader(SHADER_PATH"/axis.vert", SHADER_PATH"/axis.frag");
-
-            projection = glm::perspective(glm::radians(30.0f), 1.0f, 0.1f, 10.0f);
-            model = glm::mat4(1.0f);
         }
 
         void render(){
             shader.use();
             glm::mat4 transform = calculateTransform();
             shader.setMat4("transform", transform);
-
-            glDrawElements(GL_TRIANGLES, mesh->indices.size(), GL_UNSIGNED_INT, 0);
+            mesh.bind();
+            glDrawElements(GL_TRIANGLES, mesh.indices.size(), GL_UNSIGNED_INT, 0);
 
             glBindVertexArray(0);
         }
 
     private:
         Shader shader;
-        SimpleMesh *mesh;
-        ObjectManager manager;
+        SimpleMesh mesh;
         Camera* camera;
 
-        glm::mat4 projection;
-        glm::mat4 model;
-
         glm::mat4 calculateTransform() {
-            glm::mat4 view = glm::lookAt(glm::vec3(0,0,0), camera->Front, camera->Up);
-
-            return projection * view * model;
+            glm::mat4 projection = camera->GetProjMatrix();
+            glm::mat4 model = glm::mat4(1.0f);
+            const float displacement = 0.75f;
+            model = glm::translate(model, glm::vec3(0.0f, 0.0f, -5.0f));
+            model = glm::scale(model, glm::vec3(0.1f));
+            model = glm::rotate(model, -glm::radians(camera->Pitch), glm::vec3(1.0,0,0));
+            model = glm::rotate(model, glm::radians(camera->Yaw + 90.0f), camera->WorldUp);
+            glm::mat4 model2 = glm::mat4(1.0f);
+            model2 = glm::translate(model2, glm::vec3(displacement, displacement, 0.0f));
+            return model2 * projection * model;
         }
 };
 

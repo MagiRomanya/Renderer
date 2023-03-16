@@ -33,10 +33,11 @@ class Renderer{
         Camera camera;
 
         Renderer() {
+            // Create window and opengl context
+            window = CreateWindow();
             camera = Camera();
             camera.Position = glm::vec3(0,0,1);
-            window = CreateWindow();
-            littleAxis = LittleAxis(&camera);
+            littleAxis = new LittleAxis(&camera);
         }
 
         ~Renderer();
@@ -73,7 +74,7 @@ class Renderer{
 
         std::vector<GUI_element*> m_gui_elements;
 
-        LittleAxis littleAxis;
+        LittleAxis* littleAxis;
 };
 
 #endif // RENDERER_H_
