@@ -8,10 +8,12 @@ in VS_OUT {
 
 const float LENGTH = 0.5;
 
+const float delta = LENGTH / 50.0; // minor displacement to avoid seeing normals from behind
+
 uniform mat4 proj;
 
 void generateVector(int index){
-    gl_Position = proj * gl_in[index].gl_Position; // base of the vector
+    gl_Position = proj * (gl_in[index].gl_Position+ vec4(gs_in[index].normal, 0.0) * delta); // base of the vector
     EmitVertex();
     gl_Position = proj * (gl_in[index].gl_Position + vec4(gs_in[index].normal, 0.0) * LENGTH); // top of the vector
     EmitVertex();

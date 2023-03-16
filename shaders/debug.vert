@@ -12,20 +12,13 @@ uniform mat4 modelView;
 uniform mat4 modelViewProj;
 uniform mat4 normalMatrix;
 
-out vec2 TexCoord;
-out vec3 normal;
-out vec3 color;
-
-// Geometry shader input
-out VS_OUT {
-    vec3 normal;
-} vs_out;
+out vec3 pos;
 
 void main()
 {
-    color = vColor;
-    TexCoord =  vTexCoord;
-    normal = vNormal;
-    vs_out.normal = normalize((normalMatrix * vec4(vNormal, 0.0)).xyz);
-    gl_Position = modelView * vec4(vPosition, 1.0);
+    vec4 position = modelViewProj * vec4(vPosition, 1.0);
+    pos = position.xyz / position.w;
+    vec4 pos_color = proj * view * model * vec4(vPosition, 1.0);
+    pos = pos_color.xyz / position.w;
+    gl_Position = position;
 }

@@ -16,6 +16,7 @@
 #include "camera.h"
 #include "object.h"
 #include "shader_path.h"
+#include "gui_element.hpp"
 
 #define HEIGHT 800
 #define WIDTH 600
@@ -32,6 +33,7 @@ class Renderer{
 
         Renderer(){
             camera = Camera();
+            camera.Position = glm::vec3(0,0,1);
             window = CreateWindow();
             // createDebugCubeMesh();
         }
@@ -56,17 +58,19 @@ class Renderer{
 
         void swapAndPoll();
 
+        inline void add_GUI_element(GUI_element* element) { m_gui_elements.push_back(element); };
+
 
     private:
         void destroyQueue();
 
         void resize_framebuffer();
 
-        // void createDebugCubeMesh();
-
         GLFWwindow* CreateWindow();
 
         int screenWidth, screenHeight;
+
+        std::vector<GUI_element*> m_gui_elements;
 };
 
 #endif // RENDERER_H_

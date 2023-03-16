@@ -41,6 +41,7 @@ GLFWwindow* Renderer::CreateWindow(){
         std::cout << "Failed to intitialize GLAD" << std::endl;
         exit(-1);
     }
+    // Z testing
     glEnable(GL_DEPTH_TEST);
     return window;
 }
@@ -123,8 +124,15 @@ void Renderer::renderGUI(){
         if (changed)
             obj->updateModelMatrix();
         ImGui::End();
+
+        // Draw gui elements
+        for (size_t i = 0; i < m_gui_elements.size(); i++){
+            m_gui_elements[i]->draw();
+        }
     }
 
+
+    ImGui::EndFrame();
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
@@ -212,6 +220,13 @@ void Renderer::cameraInput(){
     }
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS){
         camera.ProcessKeyboard(RIGHT, deltaTime);
+    }
+
+    if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS){
+        camera.MovementSpeed = 17.0f;
+    }
+    if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_RELEASE){
+        camera.MovementSpeed = 2.5f;
     }
 
     // Enable / disable orbital cam

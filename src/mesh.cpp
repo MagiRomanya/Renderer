@@ -128,6 +128,7 @@ void CreateGrid(SimpleMesh &m, int nY, int nZ, double step){
         m.indices.push_back(m.triangles[i].b);
         m.indices.push_back(m.triangles[i].c);
     }
+    m.calculate_vertex_normals();
     m.createVAO();
 }
 
@@ -165,6 +166,9 @@ void SimpleMesh::createVAO(){
     // vertex texture coords
     glEnableVertexAttribArray(2);
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, TexCoord));
+    // Vertex colors
+    glEnableVertexAttribArray(3);
+    glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Color));
 
     // Unbind the VAO
     glBindVertexArray(0);
@@ -195,6 +199,16 @@ void SimpleMesh::bind(){
     glBindVertexArray(VAO);
 }
 
+void processNode(aiNode *node, const aiScene *scene, std::vector<aiMesh*> &meshes){
+    for (size_t i = 0; i < node->mNumMeshes; i++){
+        aiMesh *mesh = scene->mMeshes[node->mMeshes[i]];
+        meshes.push_back(mesh);
+    }
+    for (size_t i = 0; i < node->mNumChildren; i++){
+        processNode(node->mChildren[i], scene, meshes);
+    }
+}
+
 void SimpleMesh::loadFromFile(const std::string &path){
     Assimp::Importer import;
     const aiScene *scene = import.ReadFile(path,
@@ -207,43 +221,57 @@ void SimpleMesh::loadFromFile(const std::string &path){
         std::cout << "ERROR::ASSIMP::" << import.GetErrorString() << std::endl;
         return;
     }
-    aiMesh* mesh = scene->mMeshes[0];
+    std::vector<aiMesh*> meshes;
+    processNode(scene->mRootNode, scene, meshes);
+    std::cout << "Mesh " << path << " has " << meshes.size() << " meshes" << std::endl;
 
-    // Vertex attributes
-    for (unsigned int i = 0; i < mesh->mNumVertices; i++){
-        Vertex vertex;
-        glm::vec3 vector;
-
-        // Positions
-        vector.x = mesh->mVertices[i].x;
-        vector.y = mesh->mVertices[i].y;
-        vector.z = mesh->mVertices[i].z;
-        vertex.Position = vector;
-
-        // Normals
-        vector.x = mesh->mNormals[i].x;
-        vector.y = mesh->mNormals[i].y;
-        vector.z = mesh->mNormals[i].z;
-        vertex.Normal = vector;
-
-        // Texture coordinates
-        if (mesh->mTextureCoords[0]){
-            glm::vec2 vec;
-            vec.x = mesh->mTextureCoords[0][i].x;
-            vec.y = mesh->mTextureCoords[0][i].y;
-            vertex.TexCoord = vec;
+    for (size_t m = 0; m < meshes.size(); m++){
+        aiMesh* mesh = meshes[m];
+        unsigned int last_mesh_indices = vertices.size();
+        glm::vec3 color = glm::vec3(0.0f);
+        if (mesh->HasVertexColors(0)){
+            color.r = mesh->mColors[0]->r;
+            color.g = mesh->mColors[0]->g;
+            color.b = mesh->mColors[0]->b;
         }
-        else
-            vertex.TexCoord = glm::vec2(0.0f, 0.0f); // no texture coordinates
+        // Vertex attributes
+        for (unsigned int i = 0; i < mesh->mNumVertices; i++){
+            Vertex vertex;
+            glm::vec3 vector;
 
-        vertices.push_back(vertex);
-    }
+            // Positions
+            vector.x = mesh->mVertices[i].x;
+            vector.y = mesh->mVertices[i].y;
+            vector.z = mesh->mVertices[i].z;
+            vertex.Position = vector;
 
-    // Mesh indices
-    for (unsigned int i = 0; i < mesh->mNumFaces; i++) {
-        aiFace face = mesh->mFaces[i];
-        for (unsigned int j = 0; j < face.mNumIndices; j++)
-            indices.push_back(face.mIndices[j]);
+            // Normals
+            vector.x = mesh->mNormals[i].x;
+            vector.y = mesh->mNormals[i].y;
+            vector.z = mesh->mNormals[i].z;
+            vertex.Normal = vector;
+
+            // Colors
+            vertex.Color = color;
+
+            // Texture coordinates
+            if (mesh->mTextureCoords[0]){
+                glm::vec2 vec;
+                vec.x = mesh->mTextureCoords[0][i].x;
+                vec.y = mesh->mTextureCoords[0][i].y;
+                vertex.TexCoord = vec;
+            }
+            else
+                vertex.TexCoord = glm::vec2(0.0f, 0.0f); // no texture coordinates
+
+            vertices.push_back(vertex);
+        }
+        // Mesh indices
+        for (unsigned int i = 0; i < mesh->mNumFaces; i++) {
+            aiFace face = mesh->mFaces[i];
+            for (unsigned int j = 0; j < face.mNumIndices; j++)
+                indices.push_back(last_mesh_indices + face.mIndices[j]);
+        }
     }
     updateTrianglesFromIndices();
     createVAO();

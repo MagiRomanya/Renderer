@@ -18,6 +18,7 @@
 struct Vertex {
     glm::vec3 Position;
     glm::vec3 Normal;
+    glm::vec3 Color;
     glm::vec2 TexCoord;
 };
 
@@ -25,11 +26,8 @@ struct Triangle {
     int a, b, c;
 };
 
-struct SimpleTexture {
-    unsigned int id;
-    std::string type;
-};
 
+/* Mesh class which handles vertices, indices and openGL VAOs */
 class SimpleMesh {
     public:
         // mesh data

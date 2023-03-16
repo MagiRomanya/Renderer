@@ -57,8 +57,7 @@ void Object::updateModelMatrix(){
     model = glm::scale(model, scaling);
 
     // Translation
-    // FIXME: I'm having problems understanding some of the signs regarding translation
-    model = glm::translate(model, - translation / scaling); // Component-wise division
+    model = glm::translate(model, translation / scaling); // Component-wise division
 
     // Rotation
     model = glm::rotate(model, radians.x, glm::vec3(1,0,0));

@@ -1,7 +1,10 @@
 #include "camera.h"
 
 Camera::Camera(glm::vec3 position, glm::vec3 up, float yaw, float pitch)
-    : Front(glm::vec3(0.0f, 0.0f, -1.0f)), MovementSpeed(SPEED), MouseSensitivity(SENSITIVITY), Zoom(ZOOM)
+    : Front(glm::vec3(0.0f, 0.0f, -1.0f)),
+      MovementSpeed(SPEED),
+      MouseSensitivity(SENSITIVITY),
+      Zoom(ZOOM)
 {
     Position = position;
     WorldUp = up;
@@ -28,9 +31,9 @@ void Camera::ProcessKeyboard(Camera_Movement direction, float deltaTime){
     if (direction == BACKWARD)
         Position -= Front * velocity;
     if (direction == LEFT)
-        Position -= Right * velocity;
-    if (direction == RIGHT)
         Position += Right * velocity;
+    if (direction == RIGHT)
+        Position -= Right * velocity;
 }
 
 void Camera::ProcessMouseMovement(float xoffset, float yoffset, GLboolean constrainPitch){
@@ -40,8 +43,8 @@ void Camera::ProcessMouseMovement(float xoffset, float yoffset, GLboolean constr
     xoffset *= MouseSensitivity;
     yoffset *= MouseSensitivity;
 
-    Yaw   -= xoffset;
-    Pitch += yoffset;
+    Yaw   += xoffset;
+    Pitch -= yoffset;
 
     // make sure that when pitch is out of bounds, screen doesn't get flipped
     if (constrainPitch)
