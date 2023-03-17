@@ -37,26 +37,26 @@ endif()
 
 
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/imgui)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/external/glfw)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/external/glm)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/external/assimp)
 
 
 set(CMAKE_BUILD_TYPE Debug)
 
-find_package(glfw3 3.3 REQUIRED)
 set(OpenGL_GL_PREFERENCE GLVND)
 find_package(OpenGL REQUIRED)
-find_package(glm REQUIRED)
-find_package(assimp REQUIRED)
 
 target_include_directories(${PROJECT_NAME} PUBLIC
   ${CMAKE_CURRENT_SOURCE_DIR}/include/
-  ${GLM_INCLUDE_DIR}
-  ${GLFW_INCLUDE_DIR}
-  ${ASSIMP_INCLUDE_DIR}
+  ${CMAKE_CURRENT_SOURCE_DIR}/external/glfw/include/
+  ${CMAKE_CURRENT_SOURCE_DIR}/external/glm/
+  ${CMAKE_CURRENT_SOURCE_DIR}/external/assimp/include/
   )
 
 target_link_libraries(${PROJECT_NAME} PUBLIC
   imgui
   glfw
   OpenGL::GL
-  ${ASSIMP_LIBRARIES}
+  assimp
   )
