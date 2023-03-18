@@ -3,6 +3,7 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED true)
 # compile_commands.json
 set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
+set(CMAKE_POLICY_DEFAULT_CMP0077 NEW)
 
 project(renderer VERSION 0.1)
 
@@ -19,27 +20,33 @@ set(SOURCE_FILES
   src/little_axis.cpp
 )
 
-
 set(SHADER_PATH "${PROJECT_SOURCE_DIR}/shaders")
 set(TEXTURE_PATH "${PROJECT_SOURCE_DIR}/img")
+
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/include/shader_path.h.in ${CMAKE_CURRENT_SOURCE_DIR}/../include/shader_path.h)
 
 # Creates a library if added as a subdirectory or compiles it as
 # an executable if run as a top level CMakeLists.txt
 if(PROJECT_IS_TOP_LEVEL)
   message("${PROJECT_NAME} compiled as a standalone")
-  configure_file(include/shader_path.h.in ../include/shader_path.h)
-  set(SOURCE_FILES ${SOURCE_FILES} src/main.cpp)
-  add_executable(${PROJECT_NAME} ${SOURCE_FILES})
+  add_executable(${PROJECT_NAME} ${SOURCE_FILES} src/main.cpp)
 else()
   message("${PROJECT_NAME} added as subdirectory")
-  add_library(${PROJECT_NAME} ${SOURCE_FILES})
+  add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES})
 endif()
 
 
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/imgui)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/external/glfw)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/external/glm)
+
+set(BUILD_SHARED_LIBS ON)
+set(ASSIMP_BUILD_ZLIB ON)
+set(ASSIMP_BUILD_TESTS OFF)
+set(ASSIMP_INSTALL OFF)
+message("---------------- ASSIMP ---------------")
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/external/assimp)
+message("---------------------------------------")
 
 
 set(CMAKE_BUILD_TYPE Debug)
@@ -60,3 +67,21 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
   OpenGL::GL
   assimp
   )
+
+# set(LIBRARY_NAME "rendererXD")
+# # target_compile_definitions(${LIBRARY_NAME} PRIVATE GLAD_GLAPI_EXPORT GLAD_GLAPI_EXPORT_BUILD)
+# add_library(${LIBRARY_NAME} SHARED ${SOURCE_FILES})
+
+# target_include_directories(${LIBRARY_NAME} PUBLIC
+#   ${CMAKE_CURRENT_SOURCE_DIR}/include/
+#   ${CMAKE_CURRENT_SOURCE_DIR}/external/glfw/include/
+#   ${CMAKE_CURRENT_SOURCE_DIR}/external/glm/
+#   ${CMAKE_CURRENT_SOURCE_DIR}/external/assimp/include/
+#   )
+
+# target_link_libraries(${LIBRARY_NAME} PUBLIC
+#   imgui
+#   glfw
+#   OpenGL::GL
+#   assimp
+#   )
