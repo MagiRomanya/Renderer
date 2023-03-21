@@ -67,21 +67,3 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
   OpenGL::GL
   assimp
   )
-
-# set(LIBRARY_NAME "rendererXD")
-# # target_compile_definitions(${LIBRARY_NAME} PRIVATE GLAD_GLAPI_EXPORT GLAD_GLAPI_EXPORT_BUILD)
-# add_library(${LIBRARY_NAME} SHARED ${SOURCE_FILES})
-
-# target_include_directories(${LIBRARY_NAME} PUBLIC
-#   ${CMAKE_CURRENT_SOURCE_DIR}/include/
-#   ${CMAKE_CURRENT_SOURCE_DIR}/external/glfw/include/
-#   ${CMAKE_CURRENT_SOURCE_DIR}/external/glm/
-#   ${CMAKE_CURRENT_SOURCE_DIR}/external/assimp/include/
-#   )
-
-# target_link_libraries(${LIBRARY_NAME} PUBLIC
-#   imgui
-#   glfw
-#   OpenGL::GL
-#   assimp
-#   )

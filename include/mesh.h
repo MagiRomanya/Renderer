@@ -74,9 +74,14 @@ class SimpleMesh {
         unsigned int VAO, VBO, EBO;
 
         void updateIndicesFromTriangles();
+
         void desrtoyVAO();
 
     private:
+
+        void loadFromFileAssimp(const std::string &path);
+
+        void loadFromFileTinyObj(const std::string &path);
 
         void updateTrianglesFromIndices();
 };

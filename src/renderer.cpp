@@ -1,5 +1,6 @@
 #include "renderer.h"
 #include "object_manager.hpp"
+#include "utilities.h"
 
 Renderer::~Renderer(){
     ImGui_ImplOpenGL3_Shutdown();
@@ -232,16 +233,14 @@ void Renderer::cameraInput(){
     }
 
     // Enable / disable orbital cam
-    static bool escape_last_frame = false;
-    bool escape_this_frame = glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS;
-    if (escape_this_frame and (escape_this_frame != escape_last_frame)){
+    static SimpleTrigger<bool> trigger(false);
+    if (trigger.changed_to_true( glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS )){
         camera.is_orbital = !camera.is_orbital;
         if (camera.is_orbital)
             glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
         else
             glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
     }
-    escape_last_frame = escape_this_frame;
     glm::mat4 view = camera.GetViewMatrix();
     for (int i=0; i < objects.size(); i++){
         objects[i]->view = view;

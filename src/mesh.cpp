@@ -1,7 +1,14 @@
+#include "shader_path.h"
+#include <cstddef>
+#include <vector>
+#define TINYOBJLOADER_IMPLEMENTATION
+#include "external/tiny_obj_loader.h"
+
 #include "mesh.h"
 #include <iostream>
 #include "math.h"
 #include "glm/geometric.hpp"
+
 
 void SimpleMesh::boundary(std::vector<Edge> &internalEdges, std::vector<Edge> &externalEdges) const {
     /* Fills the internal edges and external edges vectors. In the internal edges vectors, we order the vector
@@ -175,7 +182,7 @@ void SimpleMesh::createVAO(){
     glBindVertexArray(0);
 }
 
-void SimpleMesh::updateVAO(){
+void SimpleMesh::updateVAO() {
     const GLenum usage = isDynamic ? GL_DYNAMIC_DRAW: GL_STATIC_DRAW;
     glBindVertexArray(VAO);
 
@@ -196,11 +203,11 @@ void SimpleMesh::updateVAO(){
 }
 
 
-void SimpleMesh::bind(){
+void SimpleMesh::bind() {
     glBindVertexArray(VAO);
 }
 
-void processNode(aiNode *node, const aiScene *scene, std::vector<aiMesh*> &meshes){
+void processNode(aiNode *node, const aiScene *scene, std::vector<aiMesh*> &meshes) {
     for (size_t i = 0; i < node->mNumMeshes; i++){
         aiMesh *mesh = scene->mMeshes[node->mMeshes[i]];
         meshes.push_back(mesh);
@@ -210,7 +217,70 @@ void processNode(aiNode *node, const aiScene *scene, std::vector<aiMesh*> &meshe
     }
 }
 
-void SimpleMesh::loadFromFile(const std::string &path){
+void SimpleMesh::loadFromFile(const std::string &path) {
+    if (path.ends_with("obj")) {
+        std::cout << "Loading mesh " << path << " with TinyObj." << std::endl;
+        loadFromFileTinyObj(path);
+    }
+    else {
+        std::cout << "Loading mesh " << path << " with assimp." << std::endl;
+        loadFromFileAssimp(path);
+    }
+}
+
+void SimpleMesh::loadFromFileTinyObj(const std::string& path) {
+    tinyobj::ObjReaderConfig reader_config;
+    // reader_config.mtl_search_path = MESH_PATH; // Path to material files
+
+    tinyobj::ObjReader reader;
+
+    if (!reader.ParseFromFile(path, reader_config)) {
+        if (!reader.Error().empty()) {
+            std::cerr << "TinyObjReader: " << reader.Error();
+        }
+        exit(1);
+    }
+
+    if (!reader.Warning().empty()) {
+        std::cout << "TinyObjReader: " << reader.Warning();
+    }
+
+    const tinyobj::attrib_t&                attrib    = reader.GetAttrib();
+    const std::vector<tinyobj::shape_t>&    shapes    = reader.GetShapes();
+
+    for (size_t s = 0; s < shapes.size(); s++) {
+        const tinyobj::shape_t& shape = shapes[s];
+        for (size_t i = 0; i < shape.mesh.indices.size(); i++){
+            size_t index = shape.mesh.indices[i].vertex_index;
+            this->indices.push_back(index);
+        }
+    }
+
+    for (size_t v = 0; v < attrib.vertices.size(); v+=3) {
+        Vertex vert;
+        vert.Position.x = attrib.vertices[v];
+        vert.Position.y = attrib.vertices[v+1];
+        vert.Position.z = attrib.vertices[v+2];
+
+        if (attrib.texcoords.size() * 3.0f / 2.0f > v) {
+            size_t t = v / 3 * 2;
+            vert.TexCoord.x = attrib.texcoords[t];
+            vert.TexCoord.y = attrib.texcoords[t+1];
+        }
+
+        if (attrib.colors.size() > v) {
+            vert.Color.x = attrib.colors[v];
+            vert.Color.y = attrib.colors[v+1];
+            vert.Color.z = attrib.colors[v+2];
+        }
+        this->vertices.push_back(vert);
+    }
+    calculate_vertex_normals();
+    updateTrianglesFromIndices();
+    createVAO();
+}
+
+void SimpleMesh::loadFromFileAssimp(const std::string &path) {
     Assimp::Importer import;
     const aiScene *scene = import.ReadFile(path,
                                            aiProcess_Triangulate |
