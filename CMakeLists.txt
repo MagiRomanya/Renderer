@@ -44,8 +44,12 @@ set(BUILD_SHARED_LIBS ON)
 set(ASSIMP_BUILD_ZLIB ON)
 set(ASSIMP_BUILD_TESTS OFF)
 set(ASSIMP_INSTALL OFF)
+set(ASSIMP_NO_EXPORT ON)
+# set(ASSIMP_BUILD_ASSIMP_TOOLS ON)
+set(ASSIMP_WARNINGS_AS_ERRORS OFF)
 message("---------------- ASSIMP ---------------")
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/external/assimp)
+# find_package(assimp REQUIRED)
 message("---------------------------------------")
 
 
