@@ -31,6 +31,9 @@ GLFWwindow* Renderer::CreateWindow(){
     // Mouse
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
+    // Disable vsync
+    // glfwSwapInterval( 0 );
+
     // Imgui context
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
