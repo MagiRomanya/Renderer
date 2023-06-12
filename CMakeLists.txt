@@ -37,7 +37,9 @@ endif()
 
 
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/imgui)
+set(GLFW_USE_WAYLAND ON)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/external/glfw)
+# find_package(glfw3 REQUIRED)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/external/glm)
 
 set(BUILD_SHARED_LIBS ON)
