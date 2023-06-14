@@ -1,8 +1,7 @@
 #ifndef MESH_H
 #define MESH_H
 
-#include <glm/vec2.hpp>
-#include <glm/vec3.hpp>
+#include <glm/glm.hpp>
 #include <string>
 #include <vector>
 
@@ -57,6 +56,10 @@ class SimpleMesh {
         double distance(int i, int j) const;
 
         double distance2(int i, int j) const;
+
+        double distance2(int i, int j, glm::mat4 model) const;
+
+        double distance(int i, int j, glm::mat4 model) const;
 
         void calculate_normals();
 

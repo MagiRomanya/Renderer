@@ -144,8 +144,19 @@ double SimpleMesh::distance2(int i, int j) const {
     return d.x*d.x + d.y*d.y + d.z*d.z;
 }
 
+double SimpleMesh::distance2(int i, int j, glm::mat4 model) const {
+    glm::vec3 pi = model * glm::vec4(vertices[i].Position, 1.0f);
+    glm::vec3 pj = model * glm::vec4(vertices[j].Position, 1.0f);
+    glm::vec3 d = pi - pj;
+    return d.x*d.x + d.y*d.y + d.z*d.z;
+}
+
 double SimpleMesh::distance(int i, int j) const {
     return sqrt(distance2(i, j));
+}
+
+double SimpleMesh::distance(int i, int j, glm::mat4 model) const {
+    return sqrt(distance2(i, j, model));
 }
 
 void SimpleMesh::createVAO(){
