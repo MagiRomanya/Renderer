@@ -23,7 +23,7 @@ set(SOURCE_FILES
 set(SHADER_PATH "${PROJECT_SOURCE_DIR}/shaders")
 set(TEXTURE_PATH "${PROJECT_SOURCE_DIR}/img")
 
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/include/shader_path.h.in ${CMAKE_CURRENT_SOURCE_DIR}/../include/shader_path.h)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/include/shader_path.h.in ${CMAKE_CURRENT_SOURCE_DIR}/include/shader_path.h)
 
 # Creates a library if added as a subdirectory or compiles it as
 # an executable if run as a top level CMakeLists.txt
