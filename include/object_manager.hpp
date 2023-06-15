@@ -28,6 +28,8 @@ class ObjectManager{
         void loadTexture(const std::string &name, std::string path);
 
         // Create object
+        Object createObject(const std::string &meshName);
+
         Object createObject(const std::string &meshName, const std::string &shaderName);
 
         Object createObject(const std::string &meshName, const std::string &shader1Name, const std::string &shader2Name);

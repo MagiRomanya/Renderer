@@ -5,6 +5,7 @@ LittleAxis::LittleAxis(Camera* camera) : camera(camera) {
     const char* path = MESH_PATH"/3d_axis.obj";
     mesh.loadFromFile(path);
     shader = Shader(SHADER_PATH"/axis.vert", SHADER_PATH"/axis.frag");
+    mesh.createVAO();
 }
 
 void LittleAxis::render() {

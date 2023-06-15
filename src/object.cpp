@@ -2,6 +2,12 @@
 
 unsigned int Object::num = 0;
 
+Object::Object(SimpleMesh* mesh){
+    num++;
+    name = "object_" + std::to_string(num);
+    this->mesh = mesh;
+}
+
 Object::Object(SimpleMesh* mesh, Shader* shader){
     num++;
     name = "object_" + std::to_string(num);
@@ -10,6 +16,8 @@ Object::Object(SimpleMesh* mesh, Shader* shader){
 }
 
 void Object::render(){
+    if (!mesh->hasVAO()) mesh->createVAO();
+
     for (unsigned int i = 0; i < shaders.size(); i++){
         Shader* shader = shaders[i];
         shader->use();

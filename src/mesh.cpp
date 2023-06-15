@@ -136,7 +136,6 @@ void CreateGrid(SimpleMesh &m, int nY, int nZ, double step){
         m.indices.push_back(m.triangles[i].c);
     }
     m.calculate_vertex_normals();
-    m.createVAO();
 }
 
 double SimpleMesh::distance2(int i, int j) const {
@@ -160,6 +159,7 @@ double SimpleMesh::distance(int i, int j, glm::mat4 model) const {
 }
 
 void SimpleMesh::createVAO(){
+    VAO_created = true;
     const GLenum usage = isDynamic ? GL_DYNAMIC_DRAW: GL_STATIC_DRAW;
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
@@ -194,6 +194,9 @@ void SimpleMesh::createVAO(){
 }
 
 void SimpleMesh::updateVAO() {
+
+    if (!VAO_created) return;
+
     const GLenum usage = isDynamic ? GL_DYNAMIC_DRAW: GL_STATIC_DRAW;
     glBindVertexArray(VAO);
 
@@ -288,7 +291,6 @@ void SimpleMesh::loadFromFileTinyObj(const std::string& path) {
     }
     calculate_vertex_normals();
     updateTrianglesFromIndices();
-    createVAO();
 }
 
 void SimpleMesh::loadFromFileAssimp(const std::string &path) {
@@ -356,7 +358,6 @@ void SimpleMesh::loadFromFileAssimp(const std::string &path) {
         }
     }
     updateTrianglesFromIndices();
-    createVAO();
 }
 
 void SimpleMesh::updateTrianglesFromIndices(){
@@ -627,7 +628,6 @@ void CreateBox(SimpleMesh &m, float dx, float dy, float dz){
     }
 
     m.updateIndicesFromTriangles();
-    m.createVAO();
 }
 
 glm::vec3 SimpleMesh::aproximate_center() const{
@@ -639,5 +639,7 @@ glm::vec3 SimpleMesh::aproximate_center() const{
 }
 
 void SimpleMesh::desrtoyVAO(){
+    if (!VAO_created) return;
+    VAO_created = false;
     glDeleteVertexArrays(1, &VAO);
 }

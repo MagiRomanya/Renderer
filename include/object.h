@@ -34,6 +34,7 @@ class Object{
         glm::vec3 scaling = glm::vec3(1.0f);
 
         Object() {}
+        Object(SimpleMesh* mesh);
         Object(SimpleMesh* mesh, Shader* shader);
 
         inline glm::vec3 toWorld(const glm::vec3 &v) const { return glm::vec3(model * glm::vec4(v, 1)); }

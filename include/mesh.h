@@ -45,7 +45,6 @@ class SimpleMesh {
             this->vertices = vertices;
             this->indices = indices;
             this->updateTrianglesFromIndices();
-            this->createVAO();
         }
 
         // Geometry related functions
@@ -80,6 +79,8 @@ class SimpleMesh {
 
         void desrtoyVAO();
 
+        inline bool hasVAO() { return VAO_created; }
+
     private:
 
         void loadFromFileAssimp(const std::string &path);
@@ -87,6 +88,8 @@ class SimpleMesh {
         void loadFromFileTinyObj(const std::string &path);
 
         void updateTrianglesFromIndices();
+
+        bool VAO_created = false;
 };
 
 void CreateGrid(SimpleMesh &m, int nY, int nZ, double step);

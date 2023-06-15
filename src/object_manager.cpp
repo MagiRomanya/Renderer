@@ -66,6 +66,14 @@ void ObjectManager::loadMesh(const std::string &name, const std::string &path){
     m_mesh[name] = m;
 }
 
+Object ObjectManager::createObject(const std::string &meshName) {
+    if (!m_mesh.contains(meshName)) {
+        std::cout << "ERROR::OBJECT_MANAGER::CREATE_OBJECT::Mesh name " << meshName << " not found in object manager" << std::endl;
+    }
+    Object output(&m_mesh[meshName]);
+    return output;
+}
+
 Object ObjectManager::createObject(const std::string &meshName, const std::string &shaderName) {
     if (!m_mesh.contains(meshName)) {
         std::cout << "ERROR::OBJECT_MANAGER::CREATE_OBJECT::Mesh name " << meshName << " not found in object manager" << std::endl;
