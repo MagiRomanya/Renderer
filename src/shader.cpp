@@ -23,7 +23,7 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath){
     glGetProgramiv(program, GL_LINK_STATUS, &success);
     if (!success) {
         glGetProgramInfoLog(program, 512, NULL, infoLog);
-        std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n"
+        std::cerr << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n"
                   << infoLog << std::endl;
     }
 
@@ -56,7 +56,7 @@ Shader::Shader(const char *vertexPath, const char *geometryPath, const char* fra
     glGetProgramiv(program, GL_LINK_STATUS, &success);
     if (!success) {
         glGetProgramInfoLog(program, 512, NULL, infoLog);
-        std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n"
+        std::cerr << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n"
                   << infoLog << std::endl;
     }
 
@@ -85,7 +85,7 @@ std::string Shader::read_shader_soruce(const char* path){
     }
     catch(std::ifstream::failure e)
     {
-        std::cout << "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ "<< path << std::endl;
+        std::cerr << "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ "<< path << std::endl;
     }
     return shaderCode;
 }
@@ -115,7 +115,7 @@ unsigned int Shader::compile_shader(const std::string source, GLenum shaderType)
                 shaderTypeString = "GEOMETRY";
                 break;
         }
-        std::cout << "ERROR::SHADER::"<< shaderTypeString<<"::COMPILATION_FAILED\n"
+        std::cerr << "ERROR::SHADER::"<< shaderTypeString<<"::COMPILATION_FAILED\n"
                   << infoLog << std::endl;
     };
     return shader;

@@ -16,7 +16,7 @@ Renderer::~Renderer(){
 GLFWwindow* Renderer::CreateWindow(){
     /* Initializes openGL context and creates a resizable window with a callback */
     if (!glfwInit()) {
-        std::cout << "Failed to initialize GLFW" << std::endl;
+        std::cerr << "ERROR::RENDERER::CREATEWINDOW: Failed to initialize GLFW" << std::endl;
         glfwTerminate();
         exit(-1);
     }
@@ -27,7 +27,7 @@ GLFWwindow* Renderer::CreateWindow(){
     GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "Simulation", NULL, NULL);
 
     if (window == NULL){
-        std::cout << "Failed to create GLFW window" << std::endl;
+        std::cerr << "ERROR::RENDERER::CREATEWINDOW: Failed to create GLFW window" << std::endl;
         glfwTerminate();
         exit(-1);
     }
@@ -48,7 +48,7 @@ GLFWwindow* Renderer::CreateWindow(){
     ImGui_ImplOpenGL3_Init("#version 330");
 
     if (!gladLoadGLLoader( (GLADloadproc) glfwGetProcAddress )){
-        std::cout << "Failed to intitialize GLAD" << std::endl;
+        std::cerr << "ERROR::RENDERER::CREATEWINDOW: Failed to intitialize GLAD" << std::endl;
         exit(-1);
     }
     // Z testing

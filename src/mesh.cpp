@@ -233,11 +233,11 @@ void processNode(aiNode *node, const aiScene *scene, std::vector<aiMesh*> &meshe
 
 void SimpleMesh::loadFromFile(const std::string &path) {
     if (path.ends_with("obj")) {
-        std::cout << "Loading mesh " << path << " with TinyObj." << std::endl;
+        // std::cout << "Loading mesh " << path << " with TinyObj." << std::endl;
         loadFromFileTinyObj(path);
     }
     else {
-        std::cout << "Loading mesh " << path << " with assimp." << std::endl;
+        // std::cout << "Loading mesh " << path << " with assimp." << std::endl;
         loadFromFileAssimp(path);
     }
 }
@@ -302,7 +302,7 @@ void SimpleMesh::loadFromFileAssimp(const std::string &path) {
 
     if(!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
     {
-        std::cout << "ERROR::ASSIMP::" << import.GetErrorString() << std::endl;
+        std::cerr << "ERROR::ASSIMP::" << import.GetErrorString() << std::endl;
         return;
     }
     std::vector<aiMesh*> meshes;
@@ -362,7 +362,7 @@ void SimpleMesh::loadFromFileAssimp(const std::string &path) {
 
 void SimpleMesh::updateTrianglesFromIndices(){
     if (indices.size() % 3 != 0){
-        std::cout << "ERROR triangulating from indexes" << std::endl;
+        std::cerr << "ERROR triangulating from indexes" << std::endl;
         return;
     }
     for (unsigned int i = 0; i < indices.size(); i+=3){

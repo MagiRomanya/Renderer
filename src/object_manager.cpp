@@ -3,17 +3,20 @@
 ObjectManager::~ObjectManager() {
     // Destroy textures
     size_t n_textures = m_texture.size();
-    unsigned int* textures = (unsigned int*) malloc(sizeof(unsigned int) * n_textures);
-    size_t count = 0;
-    for (auto i : m_texture){
-        textures[count++] = i.second;
-    }
-    glDeleteTextures(n_textures, textures);
-    free(textures);
 
-    // Destroy shader programs
-    for (auto i : m_shader){
-        i.second.destroy();
+    if (n_textures > 0) {
+        unsigned int* textures = (unsigned int*) malloc(sizeof(unsigned int) * n_textures);
+        size_t count = 0;
+        for (auto i : m_texture){
+            textures[count++] = i.second;
+        }
+        glDeleteTextures(n_textures, textures);
+        free(textures);
+
+        // Destroy shader programs
+        for (auto i : m_shader){
+            i.second.destroy();
+        }
     }
 
     // Destroy VAOs
@@ -43,7 +46,7 @@ void ObjectManager::loadTexture(const std::string &name, std::string path){
         glGenerateMipmap(GL_TEXTURE_2D);
     }
     else{
-        std::cout << "ERROR: Failed to load the texture: " << path << std::endl;
+        std::cerr << "ERROR: Failed to load the texture: " << path << std::endl;
     }
     stbi_image_free(data);
 }
@@ -68,7 +71,7 @@ void ObjectManager::loadMesh(const std::string &name, const std::string &path){
 
 Object ObjectManager::createObject(const std::string &meshName) {
     if (!m_mesh.contains(meshName)) {
-        std::cout << "ERROR::OBJECT_MANAGER::CREATE_OBJECT::Mesh name " << meshName << " not found in object manager" << std::endl;
+        std::cerr << "ERROR::OBJECT_MANAGER::CREATE_OBJECT::Mesh name " << meshName << " not found in object manager" << std::endl;
     }
     Object output(&m_mesh[meshName]);
     return output;
@@ -76,10 +79,10 @@ Object ObjectManager::createObject(const std::string &meshName) {
 
 Object ObjectManager::createObject(const std::string &meshName, const std::string &shaderName) {
     if (!m_mesh.contains(meshName)) {
-        std::cout << "ERROR::OBJECT_MANAGER::CREATE_OBJECT::Mesh name " << meshName << " not found in object manager" << std::endl;
+        std::cerr << "ERROR::OBJECT_MANAGER::CREATE_OBJECT::Mesh name " << meshName << " not found in object manager" << std::endl;
     }
     if (!m_shader.contains(shaderName)) {
-        std::cout << "ERROR::OBJECT_MANAGER::CREATE_OBJECT::Shader name " << shaderName << " not found in object manager" << std::endl;
+        std::cerr << "ERROR::OBJECT_MANAGER::CREATE_OBJECT::Shader name " << shaderName << " not found in object manager" << std::endl;
     }
     Object output(&m_mesh[meshName], &m_shader[shaderName]);
     return output;
@@ -87,7 +90,7 @@ Object ObjectManager::createObject(const std::string &meshName, const std::strin
 
 Object ObjectManager::createObject(const std::string &meshName, const std::string &shader1Name,  const std::string &shader2Name) {
     if (!m_shader.contains(shader2Name)) {
-        std::cout << "ERROR::OBJECT_MANAGER::CREATE_OBJECT::Shader name " << shader2Name << " not found in object manager" << std::endl;
+        std::cerr << "ERROR::OBJECT_MANAGER::CREATE_OBJECT::Shader name " << shader2Name << " not found in object manager" << std::endl;
     }
     Object output = createObject(meshName, shader1Name);
     output.addShader(&m_shader[shader2Name]);
@@ -96,21 +99,21 @@ Object ObjectManager::createObject(const std::string &meshName, const std::strin
 
 unsigned int ObjectManager::getTextureID(const std::string &name){
     if (!m_texture.contains(name)){
-        std::cout << "ERROR::OBJECT_MANAGER::GET_TEXTURE_ID: Texture name " << name << " not found" << std::endl;
+        std::cerr << "ERROR::OBJECT_MANAGER::GET_TEXTURE_ID: Texture name " << name << " not found" << std::endl;
     }
     return m_texture[name];
 }
 
 SimpleMesh* ObjectManager::getMesh(const std::string &name){
     if (!m_mesh.contains(name)){
-        std::cout << "ERROR::OBJECT_MANAGER::GET_MESH: Mesh name " << name << " not found" << std::endl;
+        std::cerr << "ERROR::OBJECT_MANAGER::GET_MESH: Mesh name " << name << " not found" << std::endl;
     }
     return &m_mesh[name];
 }
 
 Shader* ObjectManager::getShader(const std::string &name){
     if (!m_mesh.contains(name)){
-        std::cout << "ERROR::OBJECT_MANAGER::GET_SHADER: Shader name " << name << " not found" << std::endl;
+        std::cerr << "ERROR::OBJECT_MANAGER::GET_SHADER: Shader name " << name << " not found" << std::endl;
     }
     return &m_shader[name];
 
