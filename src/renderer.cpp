@@ -148,8 +148,11 @@ void Renderer::renderGUI(){
 }
 
 void Renderer::render(){
+    // Clear the screen
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    // Render the list of objects
     for (int i = 0; i < objects.size(); i++){
         Object* obj = objects[i];
         if (obj->render_as_wireframe)
@@ -159,16 +162,19 @@ void Renderer::render(){
         obj->render();
     }
 
+    // Render the debug queue
     for (int i = 0; i < debugQueue.size(); i++){
         debugQueue[i].render();
     }
     debugQueue.clear();
 
+    // render the little axis on top of everything
     glClear(GL_DEPTH_BUFFER_BIT);
     littleAxis->render();
     this->renderGUI();
     this->resize_framebuffer();
 
+    // Swap buffers and poll events
     swapAndPoll();
 }
 
@@ -242,13 +248,8 @@ void Renderer::cameraInput(){
 
     // Enable / disable orbital cam
     static SimpleTrigger<bool> trigger(false);
-    if (trigger.changed_to_true( glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS )){
-        camera.is_orbital = !camera.is_orbital;
-        if (camera.is_orbital)
-            glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-        else
-            glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-    }
+    if (trigger.changed_to_true( glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS ))
+        camera.change_orbital(window);
     glm::mat4 view = camera.GetViewMatrix();
     for (int i=0; i < objects.size(); i++){
         objects[i]->view = view;

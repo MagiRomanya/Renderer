@@ -64,6 +64,7 @@ class Renderer{
 
         inline void add_GUI_element(GUI_element* element) { m_gui_elements.push_back(element); };
 
+        inline void change_orbital() { camera.change_orbital(window); }
 
     private:
         void destroyQueue();

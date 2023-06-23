@@ -78,3 +78,11 @@ void Camera::updateCameraVectors(){
     Right = glm::normalize(glm::cross(Front, WorldUp));  // normalize the vectors, because their length gets closer to 0 the more you look up or down which results in slower movement.
     Up    = glm::normalize(glm::cross(Right, Front));
 }
+
+void Camera::change_orbital(GLFWwindow* window) {
+        is_orbital = !is_orbital;
+        if (is_orbital)
+            glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+        else
+            glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+}

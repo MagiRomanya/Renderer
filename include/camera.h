@@ -4,6 +4,7 @@
 #include <glad/glad.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include "GLFW/glfw3.h"
 
 #include <vector>
 #include <iostream>
@@ -85,6 +86,8 @@ class Camera
 
         // processes input received from a mouse scroll-wheel event. Only requires input on the vertical wheel-axis
         void ProcessMouseScroll(float yoffset);
+
+        void change_orbital(GLFWwindow* window);
 
     private:
         // calculates the front vector from the Camera's (updated) Euler Angles
