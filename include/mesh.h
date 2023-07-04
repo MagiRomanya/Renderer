@@ -38,6 +38,8 @@ class SimpleMesh {
         bool isDynamic = false;
 
         std::unordered_map<Edge, Edge> edge_map;
+        std::vector<Edge> internalEdges;
+        std::vector<Edge> externalEdges;
 
         // Constructor
         SimpleMesh(){}
@@ -80,6 +82,8 @@ class SimpleMesh {
         void desrtoyVAO();
 
         inline bool hasVAO() { return VAO_created; }
+
+        std::vector<double> getPositions();
 
     private:
 

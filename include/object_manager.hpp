@@ -2,6 +2,7 @@
 #define OBJECT_MANAGER_H_
 
 #include <vector>
+#include <list>
 #include <string>
 #include <unordered_map>
 
@@ -28,11 +29,11 @@ class ObjectManager{
         void loadTexture(const std::string &name, std::string path);
 
         // Create object
-        Object createObject(const std::string &meshName);
+        Object* createObject(const std::string &meshName);
 
-        Object createObject(const std::string &meshName, const std::string &shaderName);
+        Object* createObject(const std::string &meshName, const std::string &shaderName);
 
-        Object createObject(const std::string &meshName, const std::string &shader1Name, const std::string &shader2Name);
+        Object* createObject(const std::string &meshName, const std::string &shader1Name, const std::string &shader2Name);
 
         // Utilities
         unsigned int getTextureID(const std::string &name);
@@ -45,6 +46,7 @@ class ObjectManager{
         std::unordered_map<std::string, SimpleMesh> m_mesh;
         std::unordered_map<std::string, Shader> m_shader;
         std::unordered_map<std::string, unsigned int> m_texture;
+        std::list<Object> objects;
 };
 
 #endif // OBJECT_MANAGER_H_

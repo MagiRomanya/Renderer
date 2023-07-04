@@ -645,3 +645,15 @@ void SimpleMesh::desrtoyVAO(){
     VAO_created = false;
     glDeleteVertexArrays(1, &VAO);
 }
+
+
+std::vector<double> SimpleMesh::getPositions() {
+    std::vector<double> positions;
+    positions.reserve(vertices.size()*3);
+    for (int i = 0; i < vertices.size() ; i++) {
+        positions.push_back(vertices[i].Position.x);
+        positions.push_back(vertices[i].Position.y);
+        positions.push_back(vertices[i].Position.z);
+    }
+    return positions;
+}

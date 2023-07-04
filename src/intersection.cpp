@@ -62,8 +62,8 @@ intersection_point ray_intersects_triangle(Renderer& renderer, ObjectManager &m,
 
     if (p.intersected){
         // Draw a cube in the position where de ray hits the triangle
-        Object obj = m.createObject("meshCube", "normals");
-        renderer.addObjectQueue(obj, plane_ray_intersection, 0.3f);
+        Object* obj = m.createObject("meshCube", "normals");
+        renderer.addObjectQueue(*obj, plane_ray_intersection, 0.3f);
     }
     return p;
 }

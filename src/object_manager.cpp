@@ -69,15 +69,16 @@ void ObjectManager::loadMesh(const std::string &name, const std::string &path){
     m_mesh[name] = m;
 }
 
-Object ObjectManager::createObject(const std::string &meshName) {
+Object* ObjectManager::createObject(const std::string &meshName) {
     if (!m_mesh.contains(meshName)) {
         std::cerr << "ERROR::OBJECT_MANAGER::CREATE_OBJECT::Mesh name " << meshName << " not found in object manager" << std::endl;
     }
     Object output(&m_mesh[meshName]);
-    return output;
+    objects.push_back(output);
+    return &objects.back();
 }
 
-Object ObjectManager::createObject(const std::string &meshName, const std::string &shaderName) {
+Object* ObjectManager::createObject(const std::string &meshName, const std::string &shaderName) {
     if (!m_mesh.contains(meshName)) {
         std::cerr << "ERROR::OBJECT_MANAGER::CREATE_OBJECT::Mesh name " << meshName << " not found in object manager" << std::endl;
     }
@@ -85,15 +86,16 @@ Object ObjectManager::createObject(const std::string &meshName, const std::strin
         std::cerr << "ERROR::OBJECT_MANAGER::CREATE_OBJECT::Shader name " << shaderName << " not found in object manager" << std::endl;
     }
     Object output(&m_mesh[meshName], &m_shader[shaderName]);
-    return output;
+    objects.push_back(output);
+    return &objects.back();
 }
 
-Object ObjectManager::createObject(const std::string &meshName, const std::string &shader1Name,  const std::string &shader2Name) {
+Object* ObjectManager::createObject(const std::string &meshName, const std::string &shader1Name,  const std::string &shader2Name) {
     if (!m_shader.contains(shader2Name)) {
         std::cerr << "ERROR::OBJECT_MANAGER::CREATE_OBJECT::Shader name " << shader2Name << " not found in object manager" << std::endl;
     }
-    Object output = createObject(meshName, shader1Name);
-    output.addShader(&m_shader[shader2Name]);
+    Object* output = createObject(meshName, shader1Name);
+    output->addShader(&m_shader[shader2Name]);
     return output;
 }
 
