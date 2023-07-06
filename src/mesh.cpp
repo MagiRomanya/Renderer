@@ -657,3 +657,10 @@ std::vector<double> SimpleMesh::getPositions() {
     }
     return positions;
 }
+
+void SimpleMesh::make_vertex_relative_to_center() {
+    glm::vec3 center = aproximate_center();
+    for (int i = 0; i < vertices.size(); i++) {
+        vertices[i].Position -= center;
+    }
+}

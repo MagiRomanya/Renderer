@@ -68,6 +68,8 @@ class SimpleMesh {
 
         glm::vec3 aproximate_center() const;
 
+        void make_vertex_relative_to_center();
+
         // OpenGL related functions
         void createVAO();
         void updateVAO();
