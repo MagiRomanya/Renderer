@@ -42,6 +42,7 @@ class Object{
         inline glm::vec3 toLocal(const glm::vec3 &v) const { return glm::vec3(inverse_model * glm::vec4(v, 1)); }
 
         inline void addShader(Shader* shader) {shaders.push_back(shader); }
+
         void updateModelMatrix();
 
         void render();
@@ -62,7 +63,7 @@ class Object{
         std::vector<std::string> texture_name;
         std::vector<unsigned int> texture_id;
 
-        bool _calculated_center;
+        bool _calculated_center = false;
         glm::vec3 _center;
 
         static unsigned int num;
